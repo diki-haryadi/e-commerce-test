@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	oauthConfigurator "github.com/diki-haryadi/go-micro-template/internal/oauth/configurator"
 	"github.com/diki-haryadi/ztools/config"
 	"github.com/diki-haryadi/ztools/env"
 	"github.com/diki-haryadi/ztools/logger"
@@ -13,7 +12,7 @@ import (
 	"runtime"
 	"syscall"
 
-	articleConfigurator "github.com/diki-haryadi/go-micro-template/internal/article/configurator"
+	articleConfigurator "github.com/diki-haryadi/go-micro-template/internal/auth/configurator"
 	healthCheckConfigurator "github.com/diki-haryadi/go-micro-template/internal/health_check/configurator"
 	externalBridge "github.com/diki-haryadi/ztools/external_bridge"
 	iContainer "github.com/diki-haryadi/ztools/infra_container"
@@ -109,11 +108,6 @@ func configureModule(ctx context.Context, ic *iContainer.IContainer, extBridge *
 	}
 
 	err = healthCheckConfigurator.NewConfigurator(ic).Configure(ctx)
-	if err != nil {
-		return err
-	}
-
-	err = oauthConfigurator.NewConfigurator(ic, extBridge).Configure(ctx)
 	if err != nil {
 		return err
 	}
