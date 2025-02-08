@@ -1,0 +1,19 @@
+#-------#
+# Roles #
+#-------#
+
+- table: 'roles'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440000'  # Example UUID for superuser
+  fields:
+    name: 'Superuser'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'roles'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440001'  # Example UUID for user
+  fields:
+    name: 'User'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

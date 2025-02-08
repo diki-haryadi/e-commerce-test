@@ -1,0 +1,46 @@
+#--------#
+# Scopes #
+#--------#
+
+- table: 'scopes'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440002'  # Example UUID for read scope
+  fields:
+    scope: 'read'
+    description: 'Allows read access'  # Added description field
+    is_default: true
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'scopes'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440003'  # Example UUID for read_write scope
+  fields:
+    scope: 'read_write'
+    description: 'Allows both read and write access'  # Added description field
+    is_default: false
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+#--------#
+# Scopes #
+#--------#
+
+- table: 'scopes'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440002'  # Example UUID for read scope
+  fields:
+    scope: 'read'
+    description: 'Allows read access'  # Added description field
+    is_default: true
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'scopes'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440003'  # Example UUID for read_write scope
+  fields:
+    scope: 'read_write'
+    description: 'Allows both read and write access'  # Added description field
+    is_default: false
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

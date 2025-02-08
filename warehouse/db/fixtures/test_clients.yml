@@ -1,0 +1,23 @@
+#---------#
+# Clients #
+#---------#
+
+- table: 'clients'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440008'  # Example UUID for the first client
+  fields:
+    key: 'test_client_1'
+    secret: '$2a$10$CUoGytf1pR7CC6Y043gt/.vFJUV4IRqvH5R6F0VfITP8s2TqrQ.4e'
+    redirect_uri: 'https://www.example.com'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'clients'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440009'  # Example UUID for the second client
+  fields:
+    key: 'test_client_2'
+    secret: '$2a$10$CUoGytf1pR7CC6Y043gt/.vFJUV4IRqvH5R6F0VfITP8s2TqrQ.4e'
+    redirect_uri: 'https://www.example.com'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

@@ -1,0 +1,33 @@
+#-------#
+# Users #
+#-------#
+
+- table: 'users'
+  pk:
+    id: '550e8400-e29b-41d4-a716-44665544000a'  # Example UUID for the first user
+  fields:
+    role_id: '550e8400-e29b-41d4-a716-446655440002'  # Matching UUID for superuser role
+    username: 'test@superuser'
+    password: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'users'
+  pk:
+    id: '550e8400-e29b-41d4-a716-44665544000b'  # Example UUID for the second user
+  fields:
+    role_id: '550e8400-e29b-41d4-a716-446655440003'  # Matching UUID for user role
+    username: 'test@user'
+    password: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'users'
+  pk:
+    id: '550e8400-e29b-41d4-a716-44665544000c'  # Example UUID for the third user
+  fields:
+    role_id: '550e8400-e29b-41d4-a716-446655440003'  # Matching UUID for user role
+    username: 'test@user2'
+    password: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
