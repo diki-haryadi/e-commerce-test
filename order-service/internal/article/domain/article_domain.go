@@ -23,11 +23,16 @@ type Configurator interface {
 }
 
 type UseCase interface {
-	CreateArticle(ctx context.Context, article *articleDto.CreateArticleRequestDto) (*articleDto.CreateArticleResponseDto, error)
+	Checkout(ctx context.Context, req *articleDto.CheckoutRequestDto) (*articleDto.CheckoutResponseDto, error)
+	ReleaseExpiredOrders(ctx context.Context) error
 }
 
 type Repository interface {
-	CreateArticle(ctx context.Context, article *articleDto.CreateArticleRequestDto) (*articleDto.CreateArticleResponseDto, error)
+	CreateOrder(ctx context.Context, order *articleDto.Order, items []*articleDto.OrderItem) (*articleDto.Order, error)
+	ReserveStock(ctx context.Context, warehouseID, productID uuid.UUID, quantity int64) error
+	ReleaseStock(ctx context.Context, orderID uuid.UUID) error
+	GetExpiredOrders(ctx context.Context) ([]*articleDto.Order, error)
+	GetProductsByIDs(ctx context.Context, productIDs []uuid.UUID) (map[uuid.UUID]articleDto.Product, error)
 }
 
 type GrpcController interface {
@@ -36,7 +41,7 @@ type GrpcController interface {
 }
 
 type HttpController interface {
-	CreateArticle(c echo.Context) error
+	Checkout(ctx echo.Context) error
 }
 
 type Job interface {

@@ -5,7 +5,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
-	articleDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
+	orderDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
 )
 
 type controller struct {
@@ -18,25 +18,38 @@ func NewController(uc articleDomain.UseCase) articleDomain.HttpController {
 	}
 }
 
-func (c controller) CreateArticle(ctx echo.Context) error {
+func (c *controller) Checkout(ctx echo.Context) error {
 	res := response.NewJSONResponse()
-	aDto := new(articleDto.CreateArticleRequestDto)
-	if err := ctx.Bind(aDto); err != nil {
-		res.SetError(response.ErrBadRequest).SetMessage(err.Error()).Send(ctx.Response().Writer)
+	req := new(orderDto.CheckoutRequestDto)
+
+	if err := ctx.Bind(req); err != nil {
+		res.SetError(response.ErrBadRequest).
+			SetMessage(err.Error()).
+			Send(ctx.Response().Writer)
 		return nil
 	}
 
-	if err := aDto.ValidateCreateArticleDto(); err != nil {
-		res.SetError(response.ErrBadRequest).SetMessage(err.Error()).Send(ctx.Response().Writer)
+	if err := req.Validate(); err != nil {
+		res.SetError(response.ErrBadRequest).
+			SetMessage(err.Error()).
+			Send(ctx.Response().Writer)
 		return nil
 	}
 
-	article, err := c.useCase.CreateArticle(ctx.Request().Context(), aDto)
+	result, err := c.useCase.Checkout(ctx.Request().Context(), req)
 	if err != nil {
-		res.SetError(response.ErrBadRequest).SetMessage(err.Error()).Send(ctx.Response().Writer)
+		if err.Error() == "insufficient stock" {
+			res.SetError(response.ErrBadRequest).
+				SetMessage("insufficient stock").
+				Send(ctx.Response().Writer)
+			return nil
+		}
+		res.SetError(response.ErrInternalServerError).
+			SetMessage(err.Error()).
+			Send(ctx.Response().Writer)
 		return nil
 	}
 
-	res.APIStatusSuccess().SetData(article).Send(ctx.Response().Writer)
+	res.APIStatusSuccess().SetData(result).Send(ctx.Response().Writer)
 	return nil
 }

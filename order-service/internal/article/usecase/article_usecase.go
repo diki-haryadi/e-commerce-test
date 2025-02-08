@@ -2,13 +2,14 @@ package articleUseCase
 
 import (
 	"context"
-	"encoding/json"
-
-	"github.com/segmentio/kafka-go"
+	"errors"
+	"github.com/google/uuid"
+	"log"
+	"time"
 
 	sampleExtServiceDomain "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/domain"
 	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
-	articleDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
+	orderDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
 )
 
 type useCase struct {
@@ -29,20 +30,87 @@ func NewUseCase(
 	}
 }
 
-func (uc *useCase) CreateArticle(ctx context.Context, req *articleDto.CreateArticleRequestDto) (*articleDto.CreateArticleResponseDto, error) {
-	article, err := uc.repository.CreateArticle(ctx, req)
+func (uc *useCase) Checkout(ctx context.Context, req *orderDto.CheckoutRequestDto) (*orderDto.CheckoutResponseDto, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+
+	products, err := uc.repository.GetProductsByIDs(ctx, extractProductIDs(req.Items))
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO : if err => return Marshal_Err_Exception
-	jsonArticle, _ := json.Marshal(article)
+	if len(products) != len(req.Items) {
+		return nil, errors.New("some products not found")
+	}
 
-	// if it has go keyword and if we pass the request context to it, it will terminate after request lifecycle.
-	_ = uc.kafkaProducer.PublishCreateEvent(context.Background(), kafka.Message{
-		Key:   []byte("Article"),
-		Value: jsonArticle,
-	})
+	totalAmount := calculateTotalAmount(products, req.Items)
 
-	return article, err
+	order := &orderDto.Order{
+		ID:              uuid.New(),
+		UserID:          req.UserID,
+		Status:          "pending",
+		TotalAmount:     totalAmount,
+		PaymentDeadline: time.Now().Add(1 * time.Hour),
+	}
+
+	// Create order items
+	orderItems := make([]*orderDto.OrderItem, len(req.Items))
+	for i, item := range req.Items {
+		orderItems[i] = &orderDto.OrderItem{
+			ID:          uuid.New(),
+			OrderID:     order.ID,
+			ProductID:   item.ProductID,
+			WarehouseID: item.WarehouseID,
+			Quantity:    item.Quantity,
+			Price:       products[item.ProductID].Price,
+			StockStatus: "reserved",
+		}
+	}
+
+	createdOrder, err := uc.repository.CreateOrder(ctx, order, orderItems)
+	if err != nil {
+		return nil, err
+	}
+
+	return &orderDto.CheckoutResponseDto{
+		OrderID:         createdOrder.ID,
+		Status:          createdOrder.Status,
+		TotalAmount:     createdOrder.TotalAmount,
+		PaymentDeadline: createdOrder.PaymentDeadline,
+	}, nil
+}
+
+func (uc *useCase) ReleaseExpiredOrders(ctx context.Context) error {
+	orders, err := uc.repository.GetExpiredOrders(ctx)
+	if err != nil {
+		return err
+	}
+
+	for _, order := range orders {
+		if err := uc.repository.ReleaseStock(ctx, order.ID); err != nil {
+			log.Printf("Failed to release stock for order %s: %v", order.ID, err)
+			continue
+		}
+	}
+
+	return nil
+}
+
+func extractProductIDs(items []orderDto.OrderItemRequest) []uuid.UUID {
+	productIDs := make([]uuid.UUID, len(items))
+	for i, item := range items {
+		productIDs[i] = item.ProductID
+	}
+	return productIDs
+}
+
+func calculateTotalAmount(products map[uuid.UUID]orderDto.Product, items []orderDto.OrderItemRequest) int64 {
+	var total int64
+	for _, item := range items {
+		if product, ok := products[item.ProductID]; ok {
+			total += product.Price * item.Quantity
+		}
+	}
+	return total
 }
