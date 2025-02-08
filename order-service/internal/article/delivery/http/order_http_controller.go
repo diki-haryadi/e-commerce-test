@@ -1,18 +1,18 @@
-package articleHttpController
+package orderHttpController
 
 import (
 	"github.com/diki-haryadi/go-micro-template/pkg/response"
 	"github.com/labstack/echo/v4"
 
-	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
+	orderDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
 	orderDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
 )
 
 type controller struct {
-	useCase articleDomain.UseCase
+	useCase orderDomain.UseCase
 }
 
-func NewController(uc articleDomain.UseCase) articleDomain.HttpController {
+func NewController(uc orderDomain.UseCase) orderDomain.HttpController {
 	return &controller{
 		useCase: uc,
 	}

@@ -1,16 +1,16 @@
-package articleHttpController
+package orderHttpController
 
 import (
 	"github.com/labstack/echo/v4"
 
-	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
+	orderDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
 )
 
 type Router struct {
-	controller articleDomain.HttpController
+	controller orderDomain.HttpController
 }
 
-func NewRouter(controller articleDomain.HttpController) *Router {
+func NewRouter(controller orderDomain.HttpController) *Router {
 	return &Router{
 		controller: controller,
 	}

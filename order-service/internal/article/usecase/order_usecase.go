@@ -8,21 +8,21 @@ import (
 	"time"
 
 	sampleExtServiceDomain "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/domain"
-	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
+	orderDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
 	orderDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
 )
 
 type useCase struct {
-	repository              articleDomain.Repository
-	kafkaProducer           articleDomain.KafkaProducer
+	repository              orderDomain.Repository
+	kafkaProducer           orderDomain.KafkaProducer
 	sampleExtServiceUseCase sampleExtServiceDomain.SampleExtServiceUseCase
 }
 
 func NewUseCase(
-	repository articleDomain.Repository,
+	repository orderDomain.Repository,
 	sampleExtServiceUseCase sampleExtServiceDomain.SampleExtServiceUseCase,
-	kafkaProducer articleDomain.KafkaProducer,
-) articleDomain.UseCase {
+	kafkaProducer orderDomain.KafkaProducer,
+) orderDomain.UseCase {
 	return &useCase{
 		repository:              repository,
 		kafkaProducer:           kafkaProducer,

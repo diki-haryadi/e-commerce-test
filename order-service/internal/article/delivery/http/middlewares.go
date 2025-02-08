@@ -1,4 +1,4 @@
-package articleHttpController
+package orderHttpController
 
 import (
 	"github.com/diki-haryadi/go-micro-template/config"
