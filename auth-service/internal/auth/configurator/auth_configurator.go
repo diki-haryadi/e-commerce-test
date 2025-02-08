@@ -2,10 +2,7 @@ package articleConfigurator
 
 import (
 	"context"
-	articleV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
-
 	sampleExtServiceUseCase "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/usecase"
-	articleGrpcController "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/grpc"
 	articleHttpController "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/http"
 	articleKafkaProducer "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/kafka/producer"
 	articleDomain "github.com/diki-haryadi/go-micro-template/internal/auth/domain"
@@ -31,8 +28,8 @@ func (c *configurator) Configure(ctx context.Context) error {
 	useCase := articleUseCase.NewUseCase(repository, seServiceUseCase, kafkaProducer)
 
 	// grpc
-	grpcController := articleGrpcController.NewController(useCase)
-	articleV1.RegisterArticleServiceServer(c.ic.GrpcServer.GetCurrentGrpcServer(), grpcController)
+	//grpcController := articleGrpcController.NewController(useCase)
+	//articleV1.RegisterArticleServiceServer(c.ic.GrpcServer.GetCurrentGrpcServer(), grpcController)
 
 	// http
 	httpRouterGp := c.ic.EchoHttpServer.GetEchoInstance().Group(c.ic.EchoHttpServer.GetBasePath())

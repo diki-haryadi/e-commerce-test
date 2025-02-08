@@ -1,63 +1,85 @@
-version: '3.8'
+version: '3'
+
+networks:
+  product_network:
+    driver: bridge
 
 volumes:
   pg_data:
-  zookeeper_data:
-    driver: local
-  kafka_data:
-    driver: local
 
 services:
   postgres:
-    container_name: pg_container
+    container_name: pg_db_product_service
     image: postgres:11.16-alpine
+    networks:
+      - product_network
     volumes:
-      - 'pg_data:/var/lib/postgresql/data'
+      - pg_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
     restart: always
     ports:
-      - 5432:5432
+      - "5432"
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: go-micro-template
+      POSTGRES_DB: product_service
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d product_service"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
 
-  zookeeper:
-    image: bitnami/zookeeper
-    ports:
-      - 2181:2181
-    hostname: zookeeper
-    environment:
-      ALLOW_ANONYMOUS_LOGIN: 'true'
-
-  kafka:
-    image: bitnami/kafka
-    ports:
-      - 9092:9092
-    hostname: kafka
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
-      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
-      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
-      ALLOW_PLAINTEXT_LISTENER: 'yes'
-      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: 'true'
-#      KAFKA_CFG_LISTENERS: 'PLAINTEXT://:9092'
-#      KAFKA_CFG_ADVERTISED_LISTENERS: 'PLAINTEXT://:9092'
-#      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+  migrate:
+    image: migrate/migrate:v4.16.2
+    networks:
+      - product_network
+    env_file:
+      - ../envs/.env
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ../db/migrations:/migrations
+      - ../db/fixtures:/fixtures
+    command: [
+      "-path",
+      "/migrations",
+      "-database",
+      "postgres://admin:admin@postgres:5432/product_service?sslmode=disable",
+      "up"
+    ]
     depends_on:
-      - zookeeper
+      postgres:
+        condition: service_healthy
 
-  kafdrop:
-    image: obsidiandynamics/kafdrop
-    restart: "no"
-    ports:
-      - 9000:9000
+  data_loader:
+    build:
+      context: ..
+      dockerfile: deployments/Dockerfile.load
+    container_name: pg_db_product_service_data_loader
+    networks:
+      - product_network
+    volumes:
+      - ../db/fixtures:/app/db/fixtures
+      - ../envs/.env:/app/envs/.env  # Add this line to mount the env file
     environment:
-      KAFKA_BROKERCONNECT: kafka:29092
-      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+      - ENV=development
+      - PG_HOST=postgres  # Override the host to use the service name
+    command: ["load_data"]
     depends_on:
-      - kafka
+      migrate:
+        condition: service_completed_successfully
+
+  app:
+    build:
+      context: ..
+      dockerfile: deployments/Dockerfile
+    container_name: product_service
+    networks:
+      - product_network
+    ports:
+      - "8081:8080"
+    environment:
+      - ENV=development
+      - PG_HOST=postgres  # Override the host to use the service name
+    command: ["serve"]
+    depends_on:
+      data_loader:
+        condition: service_completed_successfully

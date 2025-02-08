@@ -2,8 +2,6 @@ package articleDomain
 
 import (
 	"context"
-	articleV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
-
 	"github.com/google/uuid"
 
 	"github.com/labstack/echo/v4"
@@ -35,8 +33,8 @@ type Repository interface {
 }
 
 type GrpcController interface {
-	CreateArticle(ctx context.Context, req *articleV1.CreateArticleRequest) (*articleV1.CreateArticleResponse, error)
-	GetArticleById(ctx context.Context, req *articleV1.GetArticleByIdRequest) (*articleV1.GetArticleByIdResponse, error)
+	//CreateArticle(ctx context.Context, req *articleV1.CreateArticleRequest) (*articleV1.CreateArticleResponse, error)
+	//GetArticleById(ctx context.Context, req *articleV1.GetArticleByIdRequest) (*articleV1.GetArticleByIdResponse, error)
 }
 
 type HttpController interface {

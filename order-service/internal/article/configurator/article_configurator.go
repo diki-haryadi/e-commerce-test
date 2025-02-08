@@ -2,6 +2,7 @@ package articleConfigurator
 
 import (
 	"context"
+	articleKafkaConsumer "github.com/diki-haryadi/go-micro-template/internal/article/delivery/kafka/consumer"
 	articleV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
 
 	sampleExtServiceUseCase "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/usecase"
@@ -40,7 +41,7 @@ func (c *configurator) Configure(ctx context.Context) error {
 	articleHttpController.NewRouter(httpController).Register(httpRouterGp)
 
 	// consumers
-	//articleKafkaConsumer.NewConsumer(c.ic.KafkaReader).RunConsumers(ctx)
+	articleKafkaConsumer.NewConsumer(c.ic.KafkaReader).RunConsumers(ctx)
 
 	// jobs
 	//articleJob.NewJob(c.ic.Logger).StartJobs(ctx)

@@ -12,8 +12,8 @@ import (
 	"runtime"
 	"syscall"
 
-	articleConfigurator "github.com/diki-haryadi/go-micro-template/internal/article/configurator"
 	healthCheckConfigurator "github.com/diki-haryadi/go-micro-template/internal/health_check/configurator"
+	productConfigurator "github.com/diki-haryadi/go-micro-template/internal/product/configurator"
 	externalBridge "github.com/diki-haryadi/ztools/external_bridge"
 	iContainer "github.com/diki-haryadi/ztools/infra_container"
 )
@@ -102,7 +102,7 @@ func (a *App) Run() error {
 }
 
 func configureModule(ctx context.Context, ic *iContainer.IContainer, extBridge *externalBridge.ExternalBridge) error {
-	err := articleConfigurator.NewConfigurator(ic, extBridge).Configure(ctx)
+	err := productConfigurator.NewConfigurator(ic, extBridge).Configure(ctx)
 	if err != nil {
 		return err
 	}

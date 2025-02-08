@@ -5,8 +5,7 @@ import (
 	"github.com/diki-haryadi/go-micro-template/pkg"
 	"github.com/diki-haryadi/go-micro-template/pkg/response"
 	"github.com/labstack/echo/v4"
-	"net/http"
-
+	
 	authDomain "github.com/diki-haryadi/go-micro-template/internal/auth/domain"
 	authDto "github.com/diki-haryadi/go-micro-template/internal/auth/dto"
 	authException "github.com/diki-haryadi/go-micro-template/internal/auth/exception"

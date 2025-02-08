@@ -6,22 +6,20 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 
-	articleDomain "github.com/diki-haryadi/go-micro-template/internal/auth/domain"
+	authDomain "github.com/diki-haryadi/go-micro-template/internal/auth/domain"
 )
 
 type Router struct {
-	controller articleDomain.HttpController
+	controller authDomain.HttpController
 }
 
-func NewRouter(controller articleDomain.HttpController) *Router {
+func NewRouter(controller authDomain.HttpController) *Router {
 	return &Router{
 		controller: controller,
 	}
 }
 
 func (r *Router) Register(e *echo.Group) {
-	//protected := e.Group("")
-	//protected.Use(r.JWTMiddleware())
 	e.POST("/auth/signup", r.controller.SignUp)
 	e.POST("/auth/signin", r.controller.SignIn)
 	e.POST("/auth/refresh", r.controller.RefreshToken)

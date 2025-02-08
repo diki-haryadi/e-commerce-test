@@ -17,8 +17,6 @@
 *.vsix
 
 # Envs
-envs/.env
-.env
 
 # Binaries for programs and plugins
 *.exe
