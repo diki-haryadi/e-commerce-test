@@ -3,7 +3,7 @@ package orderHttpController
 import (
 	"github.com/labstack/echo/v4"
 
-	orderDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
+	orderDomain "github.com/diki-haryadi/go-micro-template/internal/order/domain"
 )
 
 type Router struct {

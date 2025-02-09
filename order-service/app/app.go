@@ -12,8 +12,8 @@ import (
 	"runtime"
 	"syscall"
 
-	orderConfigurator "github.com/diki-haryadi/go-micro-template/internal/article/configurator"
 	healthCheckConfigurator "github.com/diki-haryadi/go-micro-template/internal/health_check/configurator"
+	orderConfigurator "github.com/diki-haryadi/go-micro-template/internal/order/configurator"
 	externalBridge "github.com/diki-haryadi/ztools/external_bridge"
 	iContainer "github.com/diki-haryadi/ztools/infra_container"
 )

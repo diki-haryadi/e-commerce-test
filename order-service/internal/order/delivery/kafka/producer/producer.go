@@ -5,7 +5,7 @@ import (
 
 	"github.com/segmentio/kafka-go"
 
-	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
+	articleDomain "github.com/diki-haryadi/go-micro-template/internal/order/domain"
 	kafkaProducer "github.com/diki-haryadi/ztools/kafka/producer"
 )
 

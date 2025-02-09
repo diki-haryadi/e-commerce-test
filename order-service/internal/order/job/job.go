@@ -7,7 +7,7 @@ import (
 
 	"github.com/robfig/cron/v3"
 
-	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
+	articleDomain "github.com/diki-haryadi/go-micro-template/internal/order/domain"
 	"github.com/diki-haryadi/ztools/wrapper"
 	wrapperErrorhandler "github.com/diki-haryadi/ztools/wrapper/handlers/error_handler"
 	wrapperRecoveryHandler "github.com/diki-haryadi/ztools/wrapper/handlers/recovery_handler"

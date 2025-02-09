@@ -8,9 +8,9 @@ import (
 
 	articleV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
 
-	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
-	articleDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
-	articleException "github.com/diki-haryadi/go-micro-template/internal/article/exception"
+	articleDomain "github.com/diki-haryadi/go-micro-template/internal/order/domain"
+	articleDto "github.com/diki-haryadi/go-micro-template/internal/order/dto"
+	articleException "github.com/diki-haryadi/go-micro-template/internal/order/exception"
 )
 
 type controller struct {

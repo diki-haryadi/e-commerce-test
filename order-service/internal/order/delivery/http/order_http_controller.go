@@ -4,8 +4,8 @@ import (
 	"github.com/diki-haryadi/go-micro-template/pkg/response"
 	"github.com/labstack/echo/v4"
 
-	orderDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
-	orderDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
+	orderDomain "github.com/diki-haryadi/go-micro-template/internal/order/domain"
+	orderDto "github.com/diki-haryadi/go-micro-template/internal/order/dto"
 )
 
 type controller struct {

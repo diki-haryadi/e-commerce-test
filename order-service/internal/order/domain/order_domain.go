@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/kafka-go"
 
-	orderDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
+	orderDto "github.com/diki-haryadi/go-micro-template/internal/order/dto"
 )
 
 type Configurator interface {

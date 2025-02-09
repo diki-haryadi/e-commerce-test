@@ -9,8 +9,8 @@ import (
 	"github.com/lib/pq"
 	"time"
 
-	orderDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
-	orderDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
+	orderDomain "github.com/diki-haryadi/go-micro-template/internal/order/domain"
+	orderDto "github.com/diki-haryadi/go-micro-template/internal/order/dto"
 	"github.com/diki-haryadi/ztools/postgres"
 )
 

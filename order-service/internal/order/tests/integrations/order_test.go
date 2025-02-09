@@ -11,8 +11,8 @@ import (
 	articleV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
 	"github.com/labstack/echo/v4"
 
-	articleDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
-	articleFixture "github.com/diki-haryadi/go-micro-template/internal/article/tests/fixtures"
+	articleDto "github.com/diki-haryadi/go-micro-template/internal/order/dto"
+	articleFixture "github.com/diki-haryadi/go-micro-template/internal/order/tests/fixtures"
 	grpcError "github.com/diki-haryadi/ztools/error/grpc"
 	httpError "github.com/diki-haryadi/ztools/error/http"
 
@@ -94,7 +94,7 @@ func (suite *testSuite) TestDescValidationErrCreateGrpcArticle() {
 func (suite *testSuite) TestSuccessCreateHttpArticle() {
 	articleJSON := `{"name":"John Snow","desc":"King of the north"}`
 
-	request := httptest.NewRequest(http.MethodPost, "/api/v1/article", strings.NewReader(articleJSON))
+	request := httptest.NewRequest(http.MethodPost, "/api/v1/order", strings.NewReader(articleJSON))
 	request.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 	response := httptest.NewRecorder()
@@ -113,7 +113,7 @@ func (suite *testSuite) TestSuccessCreateHttpArticle() {
 func (suite *testSuite) TestNameValidationErrCreateHttpArticle() {
 	articleJSON := `{"name":"Jo","desc":"King of the north"}`
 
-	request := httptest.NewRequest(http.MethodPost, "/api/v1/article", strings.NewReader(articleJSON))
+	request := httptest.NewRequest(http.MethodPost, "/api/v1/order", strings.NewReader(articleJSON))
 	request.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 	response := httptest.NewRecorder()
@@ -133,7 +133,7 @@ func (suite *testSuite) TestNameValidationErrCreateHttpArticle() {
 func (suite *testSuite) TestDescValidationErrCreateHttpArticle() {
 	articleJSON := `{"name":"John Snow","desc":"King"}`
 
-	request := httptest.NewRequest(http.MethodPost, "/api/v1/article", strings.NewReader(articleJSON))
+	request := httptest.NewRequest(http.MethodPost, "/api/v1/order", strings.NewReader(articleJSON))
 	request.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 	response := httptest.NewRecorder()

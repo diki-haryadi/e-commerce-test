@@ -3,11 +3,11 @@ package articleConfigurator
 import (
 	"context"
 	sampleExtServiceUseCase "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/usecase"
-	orderHttpController "github.com/diki-haryadi/go-micro-template/internal/article/delivery/http"
-	orderKafkaProducer "github.com/diki-haryadi/go-micro-template/internal/article/delivery/kafka/producer"
-	orderDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
-	orderRepository "github.com/diki-haryadi/go-micro-template/internal/article/repository"
-	orderUseCase "github.com/diki-haryadi/go-micro-template/internal/article/usecase"
+	orderHttpController "github.com/diki-haryadi/go-micro-template/internal/order/delivery/http"
+	orderKafkaProducer "github.com/diki-haryadi/go-micro-template/internal/order/delivery/kafka/producer"
+	orderDomain "github.com/diki-haryadi/go-micro-template/internal/order/domain"
+	orderRepository "github.com/diki-haryadi/go-micro-template/internal/order/repository"
+	orderUseCase "github.com/diki-haryadi/go-micro-template/internal/order/usecase"
 	externalBridge "github.com/diki-haryadi/ztools/external_bridge"
 	infraContainer "github.com/diki-haryadi/ztools/infra_container"
 )

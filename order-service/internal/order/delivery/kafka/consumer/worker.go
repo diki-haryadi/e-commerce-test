@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	articleDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
+	articleDto "github.com/diki-haryadi/go-micro-template/internal/order/dto"
 	"github.com/diki-haryadi/ztools/logger"
 	"github.com/diki-haryadi/ztools/wrapper"
 )

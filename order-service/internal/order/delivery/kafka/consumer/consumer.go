@@ -3,7 +3,7 @@ package articleKafkaConsumer
 import (
 	"context"
 
-	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
+	articleDomain "github.com/diki-haryadi/go-micro-template/internal/order/domain"
 	kafkaConsumer "github.com/diki-haryadi/ztools/kafka/consumer"
 	"github.com/diki-haryadi/ztools/logger"
 	"github.com/diki-haryadi/ztools/wrapper"
@@ -28,7 +28,7 @@ func (c *consumer) createEvent(ctx context.Context, workersNum int) {
 	r := c.createEventReader.Client
 	defer func() {
 		if err := r.Close(); err != nil {
-			logger.Zap.Sugar().Errorf("error closing create article consumer")
+			logger.Zap.Sugar().Errorf("error closing create order consumer")
 		}
 	}()
 

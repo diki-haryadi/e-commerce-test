@@ -8,8 +8,8 @@ import (
 	"time"
 
 	sampleExtServiceDomain "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/domain"
-	orderDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
-	orderDto "github.com/diki-haryadi/go-micro-template/internal/article/dto"
+	orderDomain "github.com/diki-haryadi/go-micro-template/internal/order/domain"
+	orderDto "github.com/diki-haryadi/go-micro-template/internal/order/dto"
 )
 
 type useCase struct {
