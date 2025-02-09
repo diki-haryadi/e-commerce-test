@@ -1,0 +1,63 @@
+#-------------#
+# Order Items #
+#-------------#
+
+- table: 'order_items'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440010'
+  fields:
+    order_id: '550e8400-e29b-41d4-a716-446655440000'
+    product_id: '550e8400-e29b-41d4-a716-446655440000' # Gaming Laptop X1
+    quantity: 2
+    price: 1500000.00
+    stock_status: 'reserved'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+
+- table: 'order_items'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440011'
+  fields:
+    order_id: '550e8400-e29b-41d4-a716-446655440000'
+    product_id: '550e8400-e29b-41d4-a716-446655440001' # Smartphone Pro Max
+    quantity: 1
+    price: 999000.00
+    stock_status: 'reserved'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+
+- table: 'order_items'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440012'
+  fields:
+    order_id: '550e8400-e29b-41d4-a716-446655440001'
+    product_id: '550e8400-e29b-41d4-a716-446655440002' # Wireless Earbuds
+    quantity: 1
+    price: 199000.00
+    stock_status: 'deducted'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+
+- table: 'order_items'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440013'
+  fields:
+    order_id: '550e8400-e29b-41d4-a716-446655440001'
+    product_id: '550e8400-e29b-41d4-a716-446655440003' # Smart Watch Series 5
+    quantity: 1
+    price: 299000.00
+    stock_status: 'deducted'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+
+- table: 'order_items'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440014'
+  fields:
+    order_id: '550e8400-e29b-41d4-a716-446655440002'
+    product_id: '550e8400-e29b-41d4-a716-446655440000' # Gaming Laptop X1
+    quantity: 1
+    price: 1500000.00
+    stock_status: 'released'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'

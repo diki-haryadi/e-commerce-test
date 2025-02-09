@@ -1,6 +1,8 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE orders (
     "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-    user_id BIGINT NOT NULL,
+    user_id uuid  NULL,
     status ENUM('pending', 'paid', 'cancelled', 'completed') DEFAULT 'pending',
     total_amount DECIMAL(15,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
