@@ -10,7 +10,6 @@
     description: 'High-performance gaming laptop with RTX 3080'
     category_id: '550e8400-e29b-41d4-a716-446655440010'
     price: 1500000
-    stock: 50
     status: true
     created_at: 'NOW()'
     updated_at: 'NOW()'
@@ -24,7 +23,6 @@
     description: 'Latest flagship smartphone with 5G capability'
     category_id: '550e8400-e29b-41d4-a716-446655440011'
     price: 999000
-    stock: 100
     status: true
     created_at: 'NOW()'
     updated_at: 'NOW()'
@@ -38,7 +36,6 @@
     description: 'Premium wireless earbuds with noise cancellation'
     category_id: '550e8400-e29b-41d4-a716-446655440012'
     price: 199000
-    stock: 200
     status: true
     created_at: 'NOW()'
     updated_at: 'NOW()'
@@ -52,7 +49,6 @@
     description: 'Advanced smartwatch with health monitoring'
     category_id: '550e8400-e29b-41d4-a716-446655440013'
     price: 299000
-    stock: 75
     status: true
     created_at: 'NOW()'
     updated_at: 'NOW()'
@@ -66,7 +62,6 @@
     description: 'This is a discontinued product'
     category_id: '550e8400-e29b-41d4-a716-446655440014'
     price: 50000
-    stock: 0
     status: false
     created_at: 'NOW()'
     updated_at: 'NOW()'

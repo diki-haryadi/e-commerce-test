@@ -117,6 +117,10 @@ migrate-force: ### force
 compose-up: ## docker-compose up
 	docker-compose -f deployments/docker-compose.yaml up -d --build
 
+.PHONY: compose-recreate
+compose-recreate: ## docker-compose
+	docker-compose -f deployments/docker-compose.yaml up -d --force-recreate
+
 .PHONY: compose-down
 compose-down: ## docker-compose down
 	docker-compose -f deployments/docker-compose.yaml down -v

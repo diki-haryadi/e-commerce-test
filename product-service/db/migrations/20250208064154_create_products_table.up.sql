@@ -5,7 +5,7 @@ CREATE TABLE products (
    "name" VARCHAR(254) UNIQUE NOT NULL,
    "description" text NOT NULL,
    "category_id" uuid DEFAULT uuid_generate_v4(),
-   price DECIMAL(15,2) NOT NULL,
+   "price" DECIMAL(15,2) NOT NULL,
    "status" bool NOT NULL,
    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
    "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
