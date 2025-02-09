@@ -15,7 +15,7 @@ services:
       - product_network
     volumes:
       - pg_data:/var/lib/postgresql/data
-      - ./init-scripts:/docker-entrypoint-initdb.d
+#      - ./init-scripts:/docker-entrypoint-initdb.d
     restart: always
     ports:
       - "5432"
