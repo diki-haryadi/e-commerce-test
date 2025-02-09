@@ -13,7 +13,7 @@ import (
 	"syscall"
 
 	healthCheckConfigurator "github.com/diki-haryadi/go-micro-template/internal/health_check/configurator"
-	productConfigurator "github.com/diki-haryadi/go-micro-template/internal/product/configurator"
+	productConfigurator "github.com/diki-haryadi/go-micro-template/internal/warehouse/configurator"
 	externalBridge "github.com/diki-haryadi/ztools/external_bridge"
 	iContainer "github.com/diki-haryadi/ztools/infra_container"
 )

@@ -1,0 +1,45 @@
+
+
+# stock_transfers.yml
+#-----------------#
+# Stock Transfers #
+#-----------------#
+
+- table: 'stock_transfers'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440400'
+  fields:
+    from_warehouse_id: '550e8400-e29b-41d4-a716-446655440200' # Central Warehouse
+    to_warehouse_id: '550e8400-e29b-41d4-a716-446655440201' # North Branch Warehouse
+    product_id: '550e8400-e29b-41d4-a716-446655440000' # Gaming Laptop X1
+    quantity: 10
+    status: 'completed'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'stock_transfers'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440401'
+  fields:
+    from_warehouse_id: '550e8400-e29b-41d4-a716-446655440201' # North Branch Warehouse
+    to_warehouse_id: '550e8400-e29b-41d4-a716-446655440202' # Main Storage Facility
+    product_id: '550e8400-e29b-41d4-a716-446655440002' # Wireless Earbuds
+    quantity: 25
+    status: 'pending'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'stock_transfers'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440402'
+  fields:
+    from_warehouse_id: '550e8400-e29b-41d4-a716-446655440202' # Main Storage Facility
+    to_warehouse_id: '550e8400-e29b-41d4-a716-446655440200' # Central Warehouse
+    product_id: '550e8400-e29b-41d4-a716-446655440003' # Smart Watch Series 5
+    quantity: 15
+    status: 'cancelled'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null

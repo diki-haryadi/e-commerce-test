@@ -8,52 +8,52 @@ volumes:
   pg_data:
 
 services:
-  postgres:
-    container_name: pg_db_product_service
-    image: postgres:11.16-alpine
-    networks:
-      - product_network
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-#      - ./init-scripts:/docker-entrypoint-initdb.d
-    restart: always
-    ports:
-      - "5432"
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: product_service
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d product_service"]
-      interval: 5s
-      timeout: 10s
-      retries: 5
-
-  migrate:
-    image: migrate/migrate:v4.16.2
-    networks:
-      - product_network
-    env_file:
-      - ../envs/.env
-    volumes:
-      - ../db/migrations:/migrations
-      - ../db/fixtures:/fixtures
-    command: [
-      "-path",
-      "/migrations",
-      "-database",
-      "postgres://admin:admin@postgres:5432/product_service?sslmode=disable",
-      "up"
-    ]
-    depends_on:
-      postgres:
-        condition: service_healthy
+#  postgres:
+#    container_name: pg_db_product_service
+#    image: postgres:11.16-alpine
+#    networks:
+#      - product_network
+#    volumes:
+#      - pg_data:/var/lib/postgresql/data
+##      - ./init-scripts:/docker-entrypoint-initdb.d
+#    restart: always
+#    ports:
+#      - "5432"
+#    environment:
+#      POSTGRES_USER: admin
+#      POSTGRES_PASSWORD: admin
+#      POSTGRES_DB: product_service
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U admin -d product_service"]
+#      interval: 5s
+#      timeout: 10s
+#      retries: 5
+#
+#  migrate:
+#    image: migrate/migrate:v4.16.2
+#    networks:
+#      - product_network
+#    env_file:
+#      - ../envs/.env
+#    volumes:
+#      - ../db/migrations:/migrations
+#      - ../db/fixtures:/fixtures
+#    command: [
+#      "-path",
+#      "/migrations",
+#      "-database",
+#      "postgres://admin:admin@postgres:5432/product_service?sslmode=disable",
+#      "up"
+#    ]
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
 
   data_loader:
     build:
       context: ..
       dockerfile: deployments/Dockerfile.load
-    container_name: pg_db_product_service_data_loader
+    container_name: pg_db_warehouse_service_data_loader
     networks:
       - product_network
     volumes:
@@ -61,24 +61,24 @@ services:
       - ../envs/.env:/app/envs/.env  # Add this line to mount the env file
     environment:
       - ENV=development
-      - PG_HOST=postgres  # Override the host to use the service name
+#      - PG_HOST=postgres  # Override the host to use the service name
     command: ["load_data"]
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
+#    depends_on:
+#      migrate:
+#        condition: service_completed_successfully
 
   app:
     build:
       context: ..
       dockerfile: deployments/Dockerfile
-    container_name: product_service
+    container_name: warehouse_service
     networks:
       - product_network
     ports:
-      - "8081:8080"
+      - "8084:8080"
     environment:
       - ENV=development
-      - PG_HOST=postgres  # Override the host to use the service name
+#      - PG_HOST=postgres  # Override the host to use the service name
     command: ["serve"]
     depends_on:
       data_loader:

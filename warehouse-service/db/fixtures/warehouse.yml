@@ -1,0 +1,59 @@
+# warehouses.yml
+#------------#
+# Warehouses #
+#------------#
+
+- table: 'warehouses'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440200'
+  fields:
+    shop_id: '550e8400-e29b-41d4-a716-446655440100' # Electronics Megastore
+    name: 'Central Warehouse'
+    status: true
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'warehouses'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440201'
+  fields:
+    shop_id: '550e8400-e29b-41d4-a716-446655440100' # Electronics Megastore
+    name: 'North Branch Warehouse'
+    status: true
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'warehouses'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440202'
+  fields:
+    shop_id: '550e8400-e29b-41d4-a716-446655440101' # Digital Hub Center
+    name: 'Main Storage Facility'
+    status: true
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'warehouses'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440203'
+  fields:
+    shop_id: '550e8400-e29b-41d4-a716-446655440102' # Tech Gadgets Store
+    name: 'Tech Storage Hub'
+    status: true
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'warehouses'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440204'
+  fields:
+    shop_id: '550e8400-e29b-41d4-a716-446655440104' # Inactive Shop
+    name: 'Inactive Warehouse'
+    status: false
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: 'NOW()'
