@@ -115,7 +115,31 @@ migrate-force: ### force
 
 .PHONY: compose-up
 compose-up: ## docker-compose up
-	docker-compose -f deployments/docker-compose.yaml up -d
+	docker-compose -f deployments/docker-compose.yaml up -d --build
+
+.PHONY: compose-recreate
+compose-recreate: ## docker-compose
+	docker-compose -f deployments/docker-compose.yaml up -d --force-recreate
+
+.PHONY: compose-down
+compose-down: ## docker-compose down
+	docker-compose -f deployments/docker-compose.yaml down -v
+
+.PHONY: compose-ping
+compose-ping:
+	docker-compose -f deployments/docker-compose.yaml exec $(from) ping $(to)
+
+.PHONY: compose-env
+compose-env:
+	docker-compose -f deployments/docker-compose.yaml exec $(service) env
+
+.PHONY: compose-logs
+compose-logs:
+	docker-compose -f deployments/docker-compose.yaml logs $(servie) -f
+
+.PHONY: compose-ps
+compose-ps:
+	docker-compose -f deployments/docker-compose.yaml ps
 
 ## ---------- Help ----------
 .PHONY: help

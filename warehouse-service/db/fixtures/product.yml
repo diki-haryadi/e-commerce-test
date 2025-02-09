@@ -1,0 +1,68 @@
+#---------#
+# Products #
+#---------#
+
+- table: 'products'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440000'
+  fields:
+    name: 'Gaming Laptop X1'
+    description: 'High-performance gaming laptop with RTX 3080'
+    category_id: '550e8400-e29b-41d4-a716-446655440010'
+    price: 1500000
+    status: true
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'products'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440001'
+  fields:
+    name: 'Smartphone Pro Max'
+    description: 'Latest flagship smartphone with 5G capability'
+    category_id: '550e8400-e29b-41d4-a716-446655440011'
+    price: 999000
+    status: true
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'products'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440002'
+  fields:
+    name: 'Wireless Earbuds'
+    description: 'Premium wireless earbuds with noise cancellation'
+    category_id: '550e8400-e29b-41d4-a716-446655440012'
+    price: 199000
+    status: true
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'products'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440003'
+  fields:
+    name: 'Smart Watch Series 5'
+    description: 'Advanced smartwatch with health monitoring'
+    category_id: '550e8400-e29b-41d4-a716-446655440013'
+    price: 299000
+    status: true
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'products'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440004'
+  fields:
+    name: 'Discontinued Product'
+    description: 'This is a discontinued product'
+    category_id: '550e8400-e29b-41d4-a716-446655440014'
+    price: 50000
+    status: false
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: 'NOW()'
