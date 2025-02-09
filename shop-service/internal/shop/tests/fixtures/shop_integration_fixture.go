@@ -1,4 +1,4 @@
-package articleFixture
+package shopFixture
 
 import (
 	"context"
@@ -6,17 +6,17 @@ import (
 	"net"
 	"time"
 
-	articleV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
+	productV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
 
 	sampleExtServiceUseCase "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/usecase"
-	articleGrpc "github.com/diki-haryadi/go-micro-template/internal/article/delivery/grpc"
-	articleHttp "github.com/diki-haryadi/go-micro-template/internal/article/delivery/http"
-	articleKafkaProducer "github.com/diki-haryadi/go-micro-template/internal/article/delivery/kafka/producer"
-	articleRepo "github.com/diki-haryadi/go-micro-template/internal/article/repository"
-	articleUseCase "github.com/diki-haryadi/go-micro-template/internal/article/usecase"
+	productGrpc "github.com/diki-haryadi/go-micro-template/internal/shop/delivery/grpc"
+	productHttp "github.com/diki-haryadi/go-micro-template/internal/shop/delivery/http"
+	productKafkaProducer "github.com/diki-haryadi/go-micro-template/internal/shop/delivery/kafka/producer"
+	productRepo "github.com/diki-haryadi/go-micro-template/internal/shop/repository"
+	productUseCase "github.com/diki-haryadi/go-micro-template/internal/shop/usecase"
 	externalBridge "github.com/diki-haryadi/ztools/external_bridge"
 	iContainer "github.com/diki-haryadi/ztools/infra_container"
 	"github.com/diki-haryadi/ztools/logger"
@@ -29,7 +29,7 @@ type IntegrationTestFixture struct {
 	Ctx               context.Context
 	Cancel            context.CancelFunc
 	InfraContainer    *iContainer.IContainer
-	ArticleGrpcClient articleV1.ArticleServiceClient
+	productGrpcClient productV1.productServiceClient
 }
 
 func NewIntegrationTestFixture() (*IntegrationTestFixture, error) {
@@ -49,19 +49,19 @@ func NewIntegrationTestFixture() (*IntegrationTestFixture, error) {
 	}
 
 	seServiceUseCase := sampleExtServiceUseCase.NewSampleExtServiceUseCase(extBridge.SampleExtGrpcService)
-	kafkaProducer := articleKafkaProducer.NewProducer(ic.KafkaWriter)
-	repository := articleRepo.NewRepository(ic.Postgres)
-	useCase := articleUseCase.NewUseCase(repository, seServiceUseCase, kafkaProducer)
+	kafkaProducer := productKafkaProducer.NewProducer(ic.KafkaWriter)
+	repository := productRepo.NewRepository(ic.Postgres)
+	useCase := productUseCase.NewUseCase(repository, seServiceUseCase, kafkaProducer)
 
 	// http
 	ic.EchoHttpServer.SetupDefaultMiddlewares()
 	httpRouterGp := ic.EchoHttpServer.GetEchoInstance().Group(ic.EchoHttpServer.GetBasePath())
-	httpController := articleHttp.NewController(useCase)
-	articleHttp.NewRouter(httpController).Register(httpRouterGp)
+	httpController := productHttp.NewController(useCase)
+	productHttp.NewRouter(httpController).Register(httpRouterGp)
 
 	// grpc
-	grpcController := articleGrpc.NewController(useCase)
-	articleV1.RegisterArticleServiceServer(ic.GrpcServer.GetCurrentGrpcServer(), grpcController)
+	grpcController := productGrpc.NewController(useCase)
+	productV1.RegisterproductServiceServer(ic.GrpcServer.GetCurrentGrpcServer(), grpcController)
 
 	lis := bufconn.Listen(BUFSIZE)
 	go func() {
@@ -83,7 +83,7 @@ func NewIntegrationTestFixture() (*IntegrationTestFixture, error) {
 		return nil, err
 	}
 
-	articleGrpcClient := articleV1.NewArticleServiceClient(grpcClientConn)
+	productGrpcClient := productV1.NewProductServiceClient(grpcClientConn)
 
 	return &IntegrationTestFixture{
 		TearDown: func() {
@@ -95,6 +95,6 @@ func NewIntegrationTestFixture() (*IntegrationTestFixture, error) {
 		InfraContainer:    ic,
 		Ctx:               ctx,
 		Cancel:            cancel,
-		ArticleGrpcClient: articleGrpcClient,
+		productGrpcClient: productGrpcClient,
 	}, nil
 }

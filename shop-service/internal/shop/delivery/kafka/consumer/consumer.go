@@ -1,9 +1,9 @@
-package articleKafkaConsumer
+package productKafkaConsumer
 
 import (
 	"context"
 
-	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
+	productDomain "github.com/diki-haryadi/go-micro-template/internal/shop/domain"
 	kafkaConsumer "github.com/diki-haryadi/ztools/kafka/consumer"
 	"github.com/diki-haryadi/ztools/logger"
 	"github.com/diki-haryadi/ztools/wrapper"
@@ -16,7 +16,7 @@ type consumer struct {
 	createEventReader *kafkaConsumer.Reader
 }
 
-func NewConsumer(r *kafkaConsumer.Reader) articleDomain.KafkaConsumer {
+func NewConsumer(r *kafkaConsumer.Reader) productDomain.KafkaConsumer {
 	return &consumer{createEventReader: r}
 }
 
@@ -28,7 +28,7 @@ func (c *consumer) createEvent(ctx context.Context, workersNum int) {
 	r := c.createEventReader.Client
 	defer func() {
 		if err := r.Close(); err != nil {
-			logger.Zap.Sugar().Errorf("error closing create article consumer")
+			logger.Zap.Sugar().Errorf("error closing create shop consumer")
 		}
 	}()
 

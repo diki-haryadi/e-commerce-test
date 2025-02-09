@@ -1,4 +1,4 @@
-package oauthJob
+package productJob
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 
 	"github.com/robfig/cron/v3"
 
-	oauthDomain "github.com/diki-haryadi/go-micro-template/internal/oauth/domain"
+	productDomain "github.com/diki-haryadi/go-micro-template/internal/shop/domain"
 	"github.com/diki-haryadi/ztools/wrapper"
 	wrapperErrorhandler "github.com/diki-haryadi/ztools/wrapper/handlers/error_handler"
 	wrapperRecoveryHandler "github.com/diki-haryadi/ztools/wrapper/handlers/recovery_handler"
@@ -21,7 +21,7 @@ type job struct {
 	logger *zap.Logger
 }
 
-func NewJob(logger *zap.Logger) oauthDomain.Job {
+func NewJob(logger *zap.Logger) productDomain.Job {
 	newCron := cron.New(cron.WithChain(
 		cron.SkipIfStillRunning(cronJob.NewLogger()),
 	))
@@ -29,12 +29,12 @@ func NewJob(logger *zap.Logger) oauthDomain.Job {
 }
 
 func (j *job) StartJobs(ctx context.Context) {
-	j.logArticleJob(ctx)
+	j.logProductJob(ctx)
 	go j.cron.Start()
 }
 
-func (j *job) logArticleJob(ctx context.Context) {
-	worker := wrapper.BuildChain(j.logArticleWorker(),
+func (j *job) logProductJob(ctx context.Context) {
+	worker := wrapper.BuildChain(j.logProductWorker(),
 		wrapperSentryHandler.SentryHandler,
 		wrapperRecoveryHandler.RecoveryHandler,
 		wrapperErrorhandler.ErrorHandler,

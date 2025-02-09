@@ -1,11 +1,11 @@
-package articleKafkaProducer
+package productKafkaProducer
 
 import (
 	"context"
 
 	"github.com/segmentio/kafka-go"
 
-	articleDomain "github.com/diki-haryadi/go-micro-template/internal/article/domain"
+	productDomain "github.com/diki-haryadi/go-micro-template/internal/shop/domain"
 	kafkaProducer "github.com/diki-haryadi/ztools/kafka/producer"
 )
 
@@ -13,7 +13,7 @@ type producer struct {
 	createWriter *kafkaProducer.Writer
 }
 
-func NewProducer(w *kafkaProducer.Writer) articleDomain.KafkaProducer {
+func NewProducer(w *kafkaProducer.Writer) productDomain.KafkaProducer {
 	return &producer{createWriter: w}
 }
 

@@ -1,12 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
-CREATE TABLE products (
+CREATE TABLE shops (
    "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-   "name" VARCHAR(254) UNIQUE NOT NULL,
-   "description" text NOT NULL,
-   "category_id" uuid DEFAULT uuid_generate_v4(),
-   price DECIMAL(15,2) NOT NULL,
-   "status" bool NOT NULL,
+   "name" VARCHAR(255) NOT NULL,
    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
    "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
    "deleted_at" TIMESTAMP WITH TIME ZONE DEFAULT NULL

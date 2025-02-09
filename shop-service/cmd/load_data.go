@@ -71,7 +71,7 @@ func runLoadData(cmd *cobra.Command, args []string) error {
 		log.Fatal("Error generating env dir")
 	}
 	envPaths := []string{
-		filepath.Join(filepath.Dir(callerDir), "..", "db/fixtures/product.yml"),
+		filepath.Join(filepath.Dir(callerDir), "..", "db/fixtures/shop.yml"),
 	}
 
 	bar := progressbar.NewOptions(len(envPaths),

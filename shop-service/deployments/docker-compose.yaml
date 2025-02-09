@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  product_network:
+  shop_network:
     driver: bridge
 
 volumes:
@@ -9,10 +9,10 @@ volumes:
 
 services:
   postgres:
-    container_name: pg_db_product_service
+    container_name: pg_db_shop_service
     image: postgres:11.16-alpine
     networks:
-      - product_network
+      - shop_network
     volumes:
       - pg_data:/var/lib/postgresql/data
 #      - ./init-scripts:/docker-entrypoint-initdb.d
@@ -22,9 +22,9 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: product_service
+      POSTGRES_DB: shop_service
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d product_service"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d shop_service"]
       interval: 5s
       timeout: 10s
       retries: 5
@@ -32,7 +32,7 @@ services:
   migrate:
     image: migrate/migrate:v4.16.2
     networks:
-      - product_network
+      - shop_network
     env_file:
       - ../envs/.env
     volumes:
@@ -42,7 +42,7 @@ services:
       "-path",
       "/migrations",
       "-database",
-      "postgres://admin:admin@postgres:5432/product_service?sslmode=disable",
+      "postgres://admin:admin@postgres:5432/shop_service?sslmode=disable",
       "up"
     ]
     depends_on:
@@ -53,9 +53,9 @@ services:
     build:
       context: ..
       dockerfile: deployments/Dockerfile.load
-    container_name: pg_db_product_service_data_loader
+    container_name: pg_db_shop_service_data_loader
     networks:
-      - product_network
+      - shop_network
     volumes:
       - ../db/fixtures:/app/db/fixtures
       - ../envs/.env:/app/envs/.env  # Add this line to mount the env file
@@ -71,11 +71,11 @@ services:
     build:
       context: ..
       dockerfile: deployments/Dockerfile
-    container_name: product_service
+    container_name: shop_service
     networks:
-      - product_network
+      - shop_network
     ports:
-      - "8081:8080"
+      - "8083:8080"
     environment:
       - ENV=development
       - PG_HOST=postgres  # Override the host to use the service name

@@ -1,0 +1,48 @@
+#---------#
+# Shops #
+#---------#
+
+- table: 'shops'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440100'
+  fields:
+    name: 'Electronics Megastore'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'shops'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440101'
+  fields:
+    name: 'Digital Hub Center'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'shops'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440102'
+  fields:
+    name: 'Tech Gadgets Store'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'shops'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440103'
+  fields:
+    name: 'Smart Devices Shop'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: null
+
+- table: 'shops'
+  pk:
+    id: '550e8400-e29b-41d4-a716-446655440104'
+  fields:
+    name: 'Inactive Shop'
+    created_at: 'NOW()'
+    updated_at: 'NOW()'
+    deleted_at: 'NOW()'
