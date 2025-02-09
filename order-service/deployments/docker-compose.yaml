@@ -61,7 +61,7 @@ services:
       - ../envs/.env:/app/envs/.env  # Add this line to mount the env file
     environment:
       - ENV=development
-      - PG_HOST=postgres  # Override the host to use the service name
+#      - PG_HOST=postgres  # Override the host to use the service name
     command: ["load_data"]
 #    depends_on:
 #      migrate:
@@ -78,7 +78,7 @@ services:
       - "8082:8080"
     environment:
       - ENV=development
-      - PG_HOST=postgres  # Override the host to use the service name
+#      - PG_HOST=postgres  # Override the host to use the service name
     command: ["serve"]
     depends_on:
       data_loader:
