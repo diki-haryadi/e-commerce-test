@@ -1,0 +1,174 @@
+version: '3'
+
+networks:
+  ecommerce_network:
+    driver: bridge
+
+volumes:
+  pg_data:
+
+services:
+  postgres:
+    container_name: db_ecommerce
+    image: postgres:11.16-alpine
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ecommerce
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d ecommerce"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      - ecommerce_network
+
+  migrate:
+    image: migrate/migrate:v4.16.2
+    volumes:
+      - ./auth-service/db/migrations/20250208013226_create_users_table.up.sql:/migrations/20250208013226_create_users_table.up.sql
+      - ./product-service/db/migrations/20250208064154_create_products_table.up.sql:/migrations/20250208064154_create_products_table.up.sql
+      - ./product-service/db/migrations/20250208133221_create_orders_table.up.sql:/migrations/20250208133221_create_orders_table.up.sql
+      - ./product-service/db/migrations/20250208133245_create_order_items_table.up.sql:/migrations/20250208133245_create_order_items_table.up.sql
+      - ./product-service/db/migrations/20250209020628_create_warehouses_table.up.sql:/migrations/20250209020628_create_warehouses_table.up.sql
+      - ./product-service/db/migrations/20250209020641_create_warehouse_stocks_table.up.sql:/migrations/20250209020641_create_warehouse_stocks_table.up.sql
+      - ./product-service/db/migrations/20250209020655_create_stock_transfers_table.up.sql:/migrations/20250209020655_create_stock_transfers_table.up.sql
+      - ./shop-service/db/migrations/20250209025845_create_shop_table.up.sql:/migrations/20250209025845_create_shop_table.up.sql
+    command: [
+      "-path",
+      "/migrations",
+      "-database",
+      "postgres://admin:admin@postgres:5432/ecommerce?sslmode=disable",
+      "up"
+    ]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - ecommerce_network
+
+  data_loaders:
+    build:
+      context: ./seeder
+      dockerfile: Dockerfile
+    container_name: ecommerce_data_loader
+    volumes:
+      - ./auth-service/db/fixtures/test_users.yml:/app/db/fixtures/test_users.yml
+      - ./order-service/db/fixtures/order_items.yml:/app/db/fixtures/order_items.yml
+      - ./order-service/db/fixtures/orders.yml:/app/db/fixtures/orders.yml
+      - ./product-service/db/fixtures/product.yml:/app/db/fixtures/product.yml
+      - ./shop-service/db/fixtures/shop.yml:/app/db/fixtures/shop.yml
+      - ./warehouse-service/db/fixtures/stock_transfer.yml:/app/db/fixtures/stock_transfer.yml
+      - ./warehouse-service/db/fixtures/warehouse.yml:/app/db/fixtures/warehouse.yml
+      - ./warehouse-service/db/fixtures/warehouse_stock.yml:/app/db/fixtures/warehouse_stock.yml
+    command: ["load_data"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - ecommerce_network
+
+  auth_service:
+    build:
+      context: ./auth-service
+      dockerfile: deployments/Dockerfile
+    container_name: auth_service
+    ports:
+      - "8088:8080"
+    environment:
+      - ENV=development
+    command: ["serve"]
+    depends_on:
+      data_loaders:
+        condition: service_completed_successfully
+    networks:
+      - ecommerce_network
+
+  product_service:
+    build:
+      context: ./product-service
+      dockerfile: deployments/Dockerfile
+    container_name: product_service
+    ports:
+      - "8081:8080"
+    environment:
+      - ENV=development
+    command: ["serve"]
+    depends_on:
+      data_loaders:
+        condition: service_completed_successfully
+    networks:
+      - ecommerce_network
+
+  order_service:
+    build:
+      context: ./order-service
+      dockerfile: deployments/Dockerfile
+    container_name: order_service
+    ports:
+      - "8082:8080"
+    environment:
+      - ENV=development
+    command: ["serve"]
+    depends_on:
+      data_loaders:
+        condition: service_completed_successfully
+    networks:
+      - ecommerce_network
+
+  shop_service:
+    build:
+      context: ./shop-service
+      dockerfile: deployments/Dockerfile
+    container_name: shop_service
+    ports:
+      - "8083:8080"
+    environment:
+      - ENV=development
+    command: ["serve"]
+    depends_on:
+      data_loaders:
+        condition: service_completed_successfully
+    networks:
+      - ecommerce_network
+
+  warehouse_service:
+    build:
+      context: ./warehouse-service
+      dockerfile: deployments/Dockerfile
+    container_name: warehouse_service
+    ports:
+      - "8084:8080"
+    environment:
+      - ENV=development
+    command: ["serve"]
+    depends_on:
+      data_loaders:
+        condition: service_completed_successfully
+    networks:
+      - ecommerce_network
+  api_gateway:
+    image: devopsfaith/krakend
+    container_name: api-gateway-ecommerce
+    volumes:
+      - ./api-gateway-krakend/krakend:/etc/krakend
+#      - ./api-gateway-krakend/settings:/etc/krakend/settings
+#      - ./api-gateway-krakend/templates:/etc/krakend/templates
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth_service
+      - product_service
+      - order_service
+      - shop_service
+      - warehouse_service
+    environment:
+      - FC_ENABLE_LOG_LEVEL=DEBUG
+#    command: ["run", "-c", "/etc/krakend/krakend.json"]
+    networks:
+      - ecommerce_network
