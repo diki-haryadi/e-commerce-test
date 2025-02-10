@@ -16,7 +16,6 @@ func NewRouter(controller productDomain.HttpController) *Router {
 }
 
 func (r *Router) Register(e *echo.Group) {
-
 	warehouse := e.Group("/warehouse")
 	warehouse.Use(r.JWTMiddleware())
 	warehouse.POST("", r.controller.CreateWarehouse)
