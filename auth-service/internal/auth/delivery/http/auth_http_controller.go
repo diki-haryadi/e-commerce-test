@@ -5,7 +5,7 @@ import (
 	"github.com/diki-haryadi/go-micro-template/pkg"
 	"github.com/diki-haryadi/go-micro-template/pkg/response"
 	"github.com/labstack/echo/v4"
-	
+
 	authDomain "github.com/diki-haryadi/go-micro-template/internal/auth/domain"
 	authDto "github.com/diki-haryadi/go-micro-template/internal/auth/dto"
 	authException "github.com/diki-haryadi/go-micro-template/internal/auth/exception"
@@ -25,11 +25,11 @@ func (c controller) SignUp(ctx echo.Context) error {
 	res := response.NewJSONResponse()
 	aDto := new(authDto.SignUpRequestDto)
 	if err := ctx.Bind(aDto); err != nil {
-		return authException.ArticleBindingExc()
+		return authException.AuthBindingExc()
 	}
 
 	if err := aDto.ValidateSignUpDto(); err != nil {
-		return authException.CreateArticleValidationExc(err)
+		return authException.CreateAuthValidationExc(err)
 	}
 
 	user, err := c.useCase.SignUp(ctx.Request().Context(), aDto)
@@ -46,11 +46,11 @@ func (c controller) SignIn(ctx echo.Context) error {
 	res := response.NewJSONResponse()
 	aDto := new(authDto.SignInRequestDto)
 	if err := ctx.Bind(aDto); err != nil {
-		return authException.ArticleBindingExc()
+		return authException.AuthBindingExc()
 	}
 
 	if err := aDto.ValidateSignInDto(); err != nil {
-		return authException.CreateArticleValidationExc(err)
+		return authException.CreateAuthValidationExc(err)
 	}
 	user, err := c.useCase.SignIn(ctx.Request().Context(), aDto.Username, aDto.Password)
 	if err != nil {

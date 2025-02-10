@@ -11,8 +11,8 @@ import (
 var (
 	serveCmd = &cobra.Command{
 		Use:              "serve",
-		Short:            "A API for publish audio to kafka",
-		Long:             "A API for publish audio to kafka",
+		Short:            "api",
+		Long:             "api",
 		PersistentPreRun: servePreRun,
 		RunE:             runServe,
 	}

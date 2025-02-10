@@ -98,7 +98,6 @@ func GenerateTokenPair(userId, issuer string, audience []string, scope string, s
 	}, nil
 }
 
-// Function to refresh tokens using a valid refresh token
 func RefreshTokenPair(refreshToken string, secretKey string) (*TokenPair, error) {
 	// Validate refresh token
 	claims, err := ValidateToken(refreshToken, secretKey)

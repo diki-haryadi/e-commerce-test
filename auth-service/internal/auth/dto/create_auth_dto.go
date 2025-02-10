@@ -41,7 +41,7 @@ func (caDto *SignUpRequestDto) ValidateSignUpDto() error {
 			&caDto.Password,
 			validator.Required,
 			validator.Length(6, 100),
-			validator.Match(regexp.MustCompile(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$`)),
+			//validator.Match(regexp.MustCompile(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$`)),
 		),
 	)
 }

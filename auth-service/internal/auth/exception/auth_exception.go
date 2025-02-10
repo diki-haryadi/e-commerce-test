@@ -1,4 +1,4 @@
-package articleException
+package authException
 
 import (
 	errorList "github.com/diki-haryadi/ztools/constant/error/error_list"
@@ -6,7 +6,7 @@ import (
 	errorUtils "github.com/diki-haryadi/ztools/error/error_utils"
 )
 
-func CreateArticleValidationExc(err error) error {
+func CreateAuthValidationExc(err error) error {
 	ve, ie := errorUtils.ValidationErrorHandler(err)
 	if ie != nil {
 		return ie
@@ -16,7 +16,7 @@ func CreateArticleValidationExc(err error) error {
 	return customErrors.NewValidationError(validationError.Msg, validationError.Code, ve)
 }
 
-func ArticleBindingExc() error {
+func AuthBindingExc() error {
 	articleBindingError := errorList.InternalErrorList.ArticleExceptions.BindingError
 	return customErrors.NewBadRequestError(articleBindingError.Msg, articleBindingError.Code, nil)
 }

@@ -1,25 +1,27 @@
-package articleFixture
+package authFixture
 
 import (
 	"context"
+	"fmt"
+	"github.com/diki-haryadi/go-micro-template/app"
+	"github.com/diki-haryadi/ztools/config"
 	"math"
-	"net"
 	"time"
 
 	articleV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/test/bufconn"
+	//"google.golang.org/grpc"
+	//"google.golang.org/grpc/credentials/insecure"
+	//"google.golang.org/grpc/test/bufconn"
 
 	sampleExtServiceUseCase "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/usecase"
-	articleGrpc "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/grpc"
+	//articleGrpc "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/grpc"
 	articleHttp "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/http"
 	articleKafkaProducer "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/kafka/producer"
 	articleRepo "github.com/diki-haryadi/go-micro-template/internal/auth/repository"
 	articleUseCase "github.com/diki-haryadi/go-micro-template/internal/auth/usecase"
 	externalBridge "github.com/diki-haryadi/ztools/external_bridge"
 	iContainer "github.com/diki-haryadi/ztools/infra_container"
-	"github.com/diki-haryadi/ztools/logger"
+	//"github.com/diki-haryadi/ztools/logger"
 )
 
 const BUFSIZE = 1024 * 1024
@@ -33,10 +35,14 @@ type IntegrationTestFixture struct {
 }
 
 func NewIntegrationTestFixture() (*IntegrationTestFixture, error) {
+	_ = app.New().Init()
+	fmt.Println(config.BaseConfig)
 	deadline := time.Now().Add(time.Duration(math.MaxInt64))
 	ctx, cancel := context.WithDeadline(context.Background(), deadline)
 
-	ic, infraDown, err := iContainer.NewIC(ctx)
+	container := iContainer.IContainer{}
+	ic, infraDown, err := container.IContext(ctx).
+		ICDown().ICPostgres().ICEcho().NewIC()
 	if err != nil {
 		cancel()
 		return nil, err
@@ -59,42 +65,14 @@ func NewIntegrationTestFixture() (*IntegrationTestFixture, error) {
 	httpController := articleHttp.NewController(useCase)
 	articleHttp.NewRouter(httpController).Register(httpRouterGp)
 
-	// grpc
-	grpcController := articleGrpc.NewController(useCase)
-	articleV1.RegisterArticleServiceServer(ic.GrpcServer.GetCurrentGrpcServer(), grpcController)
-
-	lis := bufconn.Listen(BUFSIZE)
-	go func() {
-		if err := ic.GrpcServer.GetCurrentGrpcServer().Serve(lis); err != nil {
-			logger.Zap.Sugar().Fatalf("Server exited with error: %v", err)
-		}
-	}()
-
-	grpcClientConn, err := grpc.DialContext(
-		ctx,
-		"bufnet",
-		grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
-			return lis.Dial()
-		}),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
-	if err != nil {
-		cancel()
-		return nil, err
-	}
-
-	articleGrpcClient := articleV1.NewArticleServiceClient(grpcClientConn)
-
 	return &IntegrationTestFixture{
 		TearDown: func() {
 			cancel()
 			infraDown()
-			_ = grpcClientConn.Close()
 			extBridgeDown()
 		},
-		InfraContainer:    ic,
-		Ctx:               ctx,
-		Cancel:            cancel,
-		ArticleGrpcClient: articleGrpcClient,
+		InfraContainer: ic,
+		Ctx:            ctx,
+		Cancel:         cancel,
 	}, nil
 }
