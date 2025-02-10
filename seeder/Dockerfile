@@ -1,0 +1,31 @@
+FROM golang:1.23-alpine AS builder
+
+WORKDIR /app
+
+# Install git and build dependencies
+RUN apk add --no-cache git build-base
+
+# Copy go mod files
+COPY go.mod go.sum ./
+
+# Copy source code including fixtures
+COPY . .
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -o main .
+
+# Final stage
+FROM alpine:latest
+
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /app/main .
+COPY --from=builder /app/envs/.env ./envs/
+
+# Copy fixtures directory structure
+#COPY ./db/fixtures /app/db/fixtures
+
+# Run with load_data argument
+ENTRYPOINT ["./main"]
+CMD ["load_data"]
