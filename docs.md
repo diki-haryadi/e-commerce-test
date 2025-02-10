@@ -6,7 +6,7 @@ Base URL: `http://localhost:8080/api/v1`
 
 ### Sign Up
 ```bash
-curl -X POST http://localhost:8088/api/v1/auth/signup \
+curl -X POST http://localhost:8080/api/v1/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
     "username": "user@gmail.com",
@@ -16,7 +16,7 @@ curl -X POST http://localhost:8088/api/v1/auth/signup \
 
 ### Sign In
 ```bash
-curl -X POST http://localhost:8088/api/v1/auth/signin \
+curl -X POST http://localhost:8080/api/v1/auth/signin \
   -H "Content-Type: application/json" \
   -d '{
     "email": "user@gmail.com",

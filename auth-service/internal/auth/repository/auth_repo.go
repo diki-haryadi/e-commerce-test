@@ -18,7 +18,7 @@ func NewRepository(conn *postgres.Postgres) authDomain.Repository {
 }
 
 func (rp *repository) SignUp(ctx context.Context, entity *authDto.SignUpRequestDto) (*authDto.CreateSignUpResponseDto, error) {
-	query := `INSERT INTO public.users (username, password) VALUES ($1, $2) RETURNING id, username, password`
+	query := `INSERT INTO public.users (username, password) VALUES ($1, $2) RETURNING id, username`
 
 	result, err := rp.postgres.SqlxDB.QueryContext(ctx, query, entity.Username, entity.Password)
 	if err != nil {
