@@ -1,0 +1,6 @@
+{
+  "endpoint": {
+    "timeout": "3000ms",
+    "headers_to_pass": ["Authorization"]
+  }
+}

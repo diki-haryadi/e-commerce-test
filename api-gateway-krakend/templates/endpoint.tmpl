@@ -1,0 +1,9 @@
+{
+    "endpoint": "{{ .endpoint }}",
+    "method": "{{ .method }}",
+    "backend": [{
+        "url_pattern": "{{ .backend_url_pattern }}",
+        "method": "{{ .method }}",
+        "host": {{ marshal .hosts }}
+    }]
+}
