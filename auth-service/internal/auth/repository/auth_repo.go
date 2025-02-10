@@ -18,7 +18,7 @@ func NewRepository(conn *postgres.Postgres) authDomain.Repository {
 }
 
 func (rp *repository) SignUp(ctx context.Context, entity *authDto.SignUpRequestDto) (*authDto.CreateSignUpResponseDto, error) {
-	query := `INSERT INTO users (name, description) VALUES ($1, $2) RETURNING id, name, description`
+	query := `INSERT INTO public.users (username, password) VALUES ($1, $2) RETURNING id, username, password`
 
 	result, err := rp.postgres.SqlxDB.QueryContext(ctx, query, entity.Username, entity.Password)
 	if err != nil {
@@ -27,7 +27,7 @@ func (rp *repository) SignUp(ctx context.Context, entity *authDto.SignUpRequestD
 
 	user := new(authDto.CreateSignUpResponseDto)
 	for result.Next() {
-		err = result.Scan(&user.ID, &user.Username, &user.Password)
+		err = result.Scan(&user.ID, &user.Username)
 		if err != nil {
 			return nil, err
 		}
@@ -37,7 +37,7 @@ func (rp *repository) SignUp(ctx context.Context, entity *authDto.SignUpRequestD
 }
 
 func (rp *repository) GetUserByUsername(ctx context.Context, username string) (*authDto.CreateSignInResponseDto, error) {
-	query := `SELECT * FROM users`
+	query := `SELECT id, username, password FROM public.users where username = $1`
 
 	user := new(authDto.CreateSignInResponseDto)
 	err := rp.postgres.SqlxDB.QueryRowContext(ctx, query, username).Scan(&user.ID, &user.Username, &user.Password)

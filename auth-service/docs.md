@@ -9,7 +9,7 @@ Base URL: `http://localhost:8080/api/v1`
 curl -X POST http://localhost:8080/api/v1/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "user@gmail.com",
+    "username": "jhon@gmail.com",
     "password": "your_password"
   }'
 ```
@@ -19,7 +19,7 @@ curl -X POST http://localhost:8080/api/v1/auth/signup \
 curl -X POST http://localhost:8080/api/v1/auth/signin \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "user@gmail.com",
+    "username": "jhon@gmail.com",
     "password": "your_password"
   }'
 ```
@@ -38,7 +38,7 @@ curl -X POST http://localhost:8080/api/v1/auth/refresh \
 ### Get Profile
 ```bash
 curl -X GET http://localhost:8080/api/v1/me \
-  -H "Authorization: Bearer your_access_token"
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzkyMDY4MDcsIm5iZiI6MTczOTIwMzIwNywiaWF0IjoxNzM5MjAzMjA3LCJzdWIiOiI1ZGVlOTc3YS0xNzY1LTQ2M2EtYTgzMC00NTU3ODJhYzUwN2UiLCJpc3MiOiJhdXRoLXNlcnZpY2UiLCJhdWQiOlsiYXV0aC1zZXJ2aWNlIiwicHJvZHVjdC1zZXJ2aWNlIiwib3JkZXItc2VydmljZSIsIndhcmVob3VzZS1zZXJ2aWNlIl0sInNjb3BlIjoidXNlcjpyZWFkIHVzZXI6d3JpdGUifQ.18dCt6Xo_GER-LTaKWcT1u2jQWEHDdjiaOVVLj4To40"
 ```
 
 ## Orders

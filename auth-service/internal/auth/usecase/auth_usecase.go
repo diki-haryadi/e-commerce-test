@@ -2,13 +2,10 @@ package articleUseCase
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/diki-haryadi/go-micro-template/config"
 	"github.com/diki-haryadi/go-micro-template/pkg"
 
 	"log"
-
-	"github.com/segmentio/kafka-go"
 
 	sampleExtServiceDomain "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/domain"
 	authDomain "github.com/diki-haryadi/go-micro-template/internal/auth/domain"
@@ -34,20 +31,15 @@ func NewUseCase(
 }
 
 func (uc *useCase) SignUp(ctx context.Context, req *authDto.SignUpRequestDto) (*authDto.CreateSignUpResponseDto, error) {
+	encryptPass, err := pkg.HashPassword(req.Password)
+	if err != nil {
+		return nil, err
+	}
+	req.Password = string(encryptPass)
 	user, err := uc.repository.SignUp(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-
-	// TODO : if err => return Marshal_Err_Exception
-	jsonArticle, _ := json.Marshal(user)
-
-	// if it has go keyword and if we pass the request context to it, it will terminate after request lifecycle.
-	_ = uc.kafkaProducer.PublishCreateEvent(context.Background(), kafka.Message{
-		Key:   []byte("Article"),
-		Value: jsonArticle,
-	})
-
 	return user, err
 }
 
