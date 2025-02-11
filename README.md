@@ -1,6 +1,5 @@
 # E-Commerce Microservices Platform
 ![system-design.png](system-design.png)
-
 A modern e-commerce platform built with microservices architecture using Go, PostgreSQL, and Docker.
 
 ## Services Overview
