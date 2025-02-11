@@ -2,41 +2,28 @@ package authFixture
 
 import (
 	"context"
-	"fmt"
 	"github.com/diki-haryadi/go-micro-template/app"
-	"github.com/diki-haryadi/ztools/config"
 	"math"
 	"time"
 
-	articleV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
-	//"google.golang.org/grpc"
-	//"google.golang.org/grpc/credentials/insecure"
-	//"google.golang.org/grpc/test/bufconn"
-
 	sampleExtServiceUseCase "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/usecase"
-	//articleGrpc "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/grpc"
-	articleHttp "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/http"
-	articleKafkaProducer "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/kafka/producer"
-	articleRepo "github.com/diki-haryadi/go-micro-template/internal/auth/repository"
-	articleUseCase "github.com/diki-haryadi/go-micro-template/internal/auth/usecase"
+	authHttp "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/http"
+	authKafkaProducer "github.com/diki-haryadi/go-micro-template/internal/auth/delivery/kafka/producer"
+	authRepo "github.com/diki-haryadi/go-micro-template/internal/auth/repository"
+	authUseCase "github.com/diki-haryadi/go-micro-template/internal/auth/usecase"
 	externalBridge "github.com/diki-haryadi/ztools/external_bridge"
 	iContainer "github.com/diki-haryadi/ztools/infra_container"
-	//"github.com/diki-haryadi/ztools/logger"
 )
 
-const BUFSIZE = 1024 * 1024
-
 type IntegrationTestFixture struct {
-	TearDown          func()
-	Ctx               context.Context
-	Cancel            context.CancelFunc
-	InfraContainer    *iContainer.IContainer
-	ArticleGrpcClient articleV1.ArticleServiceClient
+	TearDown       func()
+	Ctx            context.Context
+	Cancel         context.CancelFunc
+	InfraContainer *iContainer.IContainer
 }
 
 func NewIntegrationTestFixture() (*IntegrationTestFixture, error) {
 	_ = app.New().Init()
-	fmt.Println(config.BaseConfig)
 	deadline := time.Now().Add(time.Duration(math.MaxInt64))
 	ctx, cancel := context.WithDeadline(context.Background(), deadline)
 
@@ -55,15 +42,15 @@ func NewIntegrationTestFixture() (*IntegrationTestFixture, error) {
 	}
 
 	seServiceUseCase := sampleExtServiceUseCase.NewSampleExtServiceUseCase(extBridge.SampleExtGrpcService)
-	kafkaProducer := articleKafkaProducer.NewProducer(ic.KafkaWriter)
-	repository := articleRepo.NewRepository(ic.Postgres)
-	useCase := articleUseCase.NewUseCase(repository, seServiceUseCase, kafkaProducer)
+	kafkaProducer := authKafkaProducer.NewProducer(ic.KafkaWriter)
+	repository := authRepo.NewRepository(ic.Postgres)
+	useCase := authUseCase.NewUseCase(repository, seServiceUseCase, kafkaProducer)
 
 	// http
 	ic.EchoHttpServer.SetupDefaultMiddlewares()
 	httpRouterGp := ic.EchoHttpServer.GetEchoInstance().Group(ic.EchoHttpServer.GetBasePath())
-	httpController := articleHttp.NewController(useCase)
-	articleHttp.NewRouter(httpController).Register(httpRouterGp)
+	httpController := authHttp.NewController(useCase)
+	authHttp.NewRouter(httpController).Register(httpRouterGp)
 
 	return &IntegrationTestFixture{
 		TearDown: func() {
