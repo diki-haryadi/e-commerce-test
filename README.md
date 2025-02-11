@@ -77,34 +77,153 @@ A modern e-commerce platform built with microservices architecture using Go, Pos
 
 ```
 .
-├── auth-service/
-│   ├── cmd/
-│   ├── internal/
-│   │   ├── controller/
-│   │   ├── model/
-│   │   ├── repository/
-│   │   └── service/
-│   ├── migrations/
-│   ├── tests/
-│   └── Dockerfile
-├── product-service/
-│   ├── [similar structure]
-├── order-service/
-│   ├── [similar structure]
-├── shop-service/
-│   ├── [similar structure]
-├── warehouse-service/
-│   ├── [similar structure]
-├── deploy/
-│   ├── docker-compose.yml
-│   └── krakend/
-├── docs/
-│   ├── openapi.json
-│   └── diagrams/
-├── scripts/
-│   └── migrations/
+├── LICENSE
 ├── Makefile
-└── README.md
+├── README.md
+├── app
+│  └── app.go
+├── cmd
+│  ├── load_data.go
+│  ├── root.go
+│  └── serve.go
+├── config
+│  └── config.go
+├── db
+│  ├── fixtures
+│  │  └── test_users.yml
+│  └── migrations
+│      ├── 20250208013226_create_users_table.down.sql
+│      └── 20250208013226_create_users_table.up.sql
+├── deployments
+│  ├── Dockerfile
+│  ├── Dockerfile.load
+│  ├── docker-compose.e2e-local.yaml
+│  ├── docker-compose.yaml
+│  └── init-scripts
+│      └── init.db.sh
+├── docs.md
+├── envs
+│  ├── local.env
+│  ├── production.env
+│  ├── stage.env
+│  └── test.env
+├── external
+│  └── sample_ext_service
+│      ├── domain
+│      │  └── sample_ext_service_domain.go
+│      └── usecase
+│          └── sample_ext_service_usecase.go
+├── go.mod
+├── go.sum
+├── golangci.yaml
+├── internal
+│  ├── auth
+│  │  ├── configurator
+│  │  │  └── auth_configurator.go
+│  │  ├── delivery
+│  │  │  ├── grpc
+│  │  │  │  └── auth_grpc_controller.go
+│  │  │  ├── http
+│  │  │  │  ├── auth_http_controller.go
+│  │  │  │  └── auth_http_router.go
+│  │  │  └── kafka
+│  │  │      ├── consumer
+│  │  │      │  ├── consumer.go
+│  │  │      │  └── worker.go
+│  │  │      └── producer
+│  │  │          └── producer.go
+│  │  ├── domain
+│  │  │  └── auth_domain.go
+│  │  ├── dto
+│  │  │  ├── create_auth_dto.go
+│  │  │  └── profile_dto.go
+│  │  ├── exception
+│  │  │  └── auth_exception.go
+│  │  ├── job
+│  │  │  ├── job.go
+│  │  │  └── worker.go
+│  │  ├── repository
+│  │  │  └── auth_repo.go
+│  │  ├── tests
+│  │  │  ├── fixtures
+│  │  │  │  └── auth_integration_fixture.go
+│  │  │  └── integrations
+│  │  │      └── auth_test.go
+│  │  └── usecase
+│  │      └── auth_usecase.go
+│  └── health_check
+│      ├── configurator
+│      │  └── health_check_configurator.go
+│      ├── delivery
+│      │  ├── grpc
+│      │  │  └── health_check_grpc_controller.go
+│      │  └── http
+│      │      ├── health_check_http_controller.go
+│      │      └── health_check_http_router.go
+│      ├── domain
+│      │  └── health_check_domain.go
+│      ├── dto
+│      │  └── health_check_dto.go
+│      ├── tests
+│      │  ├── fixtures
+│      │  │  └── health_check_integration_fixture.go
+│      │  └── integrations
+│      │      └── health_check_test.go
+│      └── usecase
+│          ├── health_check_usecase.go
+│          ├── kafka_health_check
+│          │  └── kafka_health_check_usecase.go
+│          ├── postgres_health_check
+│          │  └── postgres_health_check_usecase.go
+│          └── tmp_dir_health_check
+│              └── tmp_dir_health_check_usecase.go
+├── main.go
+└── pkg
+    ├── constant
+    │  ├── constant-temp.go
+    │  ├── constant.go
+    │  ├── error
+    │  │  ├── error_list
+    │  │  │  └── error_list.go
+    │  │  └── error_title.go
+    │  ├── httputil.go
+    │  └── logger
+    │      └── logger.go
+    ├── constant.go
+    ├── error
+    │  ├── contracts
+    │  │  └── contracts.go
+    │  ├── custom_error
+    │  │  ├── application_error.go
+    │  │  ├── bad_request_error.go
+    │  │  ├── conflict_error.go
+    │  │  ├── custom_error.go
+    │  │  ├── domain_error.go
+    │  │  ├── forbiden_error.go
+    │  │  ├── internal_server_error.go
+    │  │  ├── marshaling_error.go
+    │  │  ├── not_found_error.go
+    │  │  ├── unauthorized_error.go
+    │  │  ├── unmarshaling_error.go
+    │  │  └── validation_error.go
+    │  ├── error_utils
+    │  │  └── error_utils.go
+    │  ├── grpc
+    │  │  ├── custom_grpc_error.go
+    │  │  ├── grpc_error.go
+    │  │  └── grpc_error_parser.go
+    │  └── http
+    │      ├── custom_http_error.go
+    │      ├── http_error.go
+    │      └── http_error_parser.go
+    ├── jwt_token.go
+    ├── password.go
+    ├── response
+    │  ├── error.go
+    │  └── response.go
+    ├── sql.go
+    ├── string.go
+    └── utils.go
 ```
 
 ## Database Schema
@@ -113,54 +232,80 @@ Each service has its own database with the following key tables:
 
 ### Auth Service
 ```sql
--- Users table
 CREATE TABLE users (
-    id UUID PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+   "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+   "username" VARCHAR(254) UNIQUE NOT NULL,
+   "password" VARCHAR(200) NOT NULL,
+   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+   "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+   "deleted_at" TIMESTAMP WITH TIME ZONE DEFAULT NULL
 );
+
 ```
 
 ### Product Service
 ```sql
--- Products table
 CREATE TABLE products (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    price DECIMAL(10,2) NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "name" VARCHAR(254) UNIQUE NOT NULL,
+  "description" text NOT NULL,
+  "category_id" uuid DEFAULT uuid_generate_v4(),
+  "price" DECIMAL(15,2) NOT NULL,
+  "status" bool NOT NULL,
+  "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "deleted_at" TIMESTAMP WITH TIME ZONE DEFAULT NULL
+);
+```
+
+### Order Service
+```sql
+CREATE TABLE orders (
+    "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    "user_id" uuid  NULL,
+    "status" order_status DEFAULT 'pending',
+    "total_amount" DECIMAL(15,2) NOT NULL,
+    "payment_deadline" TIMESTAMP,
+    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMP WITH TIME ZONE DEFAULT NULL
+);
+
+CREATE TABLE order_items (
+     "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+     "order_id" uuid  NULL,
+     "product_id" uuid   NULL,
+     "warehouse_id" uuid   NULL,
+     "quantity" INT NOT NULL,
+     "price" DECIMAL(15,2) NOT NULL,
+     "stock_status" stock_status DEFAULT 'released',
+     "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+     "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+     "deleted_at" TIMESTAMP WITH TIME ZONE DEFAULT NULL
 );
 ```
 
 ### Shop Service
 ```sql
--- Shops table
 CREATE TABLE shops (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    owner_id UUID NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+   "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+   "name" VARCHAR(255) NOT NULL,
+   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+   "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+   "deleted_at" TIMESTAMP WITH TIME ZONE DEFAULT NULL
 );
 ```
 
 ### Warehouse Service
 ```sql
--- Warehouses table
 CREATE TABLE warehouses (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    location TEXT NOT NULL,
-    status VARCHAR(50) NOT NULL,
-    shop_id UUID NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+    "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    "shop_id"  uuid NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "status" bool NOT NULL,
+    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMP WITH TIME ZONE DEFAULT NULL
 );
 
 -- Stock table
@@ -172,21 +317,31 @@ CREATE TABLE stocks (
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
 );
+
+CREATE TABLE warehouse_stocks (
+  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "warehouse_id" uuid NOT NULL,
+  "product_id" uuid NOT NULL,
+  "quantity" INT NOT NULL DEFAULT 0,
+  "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "deleted_at" TIMESTAMP WITH TIME ZONE DEFAULT NULL
+);
 ```
 
 ## Getting Started
 
 ### Prerequisites
-- Go 1.21+
+- Go 1.23.3
 - Docker and Docker Compose
 - Make
-- PostgreSQL 14+ (for local development)
+- PostgreSQL 11.16 (for local development)
 
 ### Setup
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-org/ecommerce-platform.git
-cd ecommerce-platform
+git clone https://github.com/diki-haryadi/e-commerce-test.git
+cd e-commerce-test
 ```
 
 2. Start the services:
@@ -194,15 +349,6 @@ cd ecommerce-platform
 make up
 ```
 
-3. Run migrations:
-```bash
-make migrate-up
-```
-
-4. Seed the database:
-```bash
-make seed
-```
 
 ### Available Make Commands
 ```
@@ -214,20 +360,6 @@ up:
 down:
     docker-compose down
 
-# Run migrations
-migrate-up:
-    docker-compose exec auth-service go run cmd/migrate/main.go up
-    docker-compose exec product-service go run cmd/migrate/main.go up
-    docker-compose exec order-service go run cmd/migrate/main.go up
-    docker-compose exec shop-service go run cmd/migrate/main.go up
-    docker-compose exec warehouse-service go run cmd/migrate/main.go up
-
-# Run database seeders
-seed:
-    docker-compose exec auth-service go run cmd/seeder/main.go
-    docker-compose exec product-service go run cmd/seeder/main.go
-    docker-compose exec shop-service go run cmd/seeder/main.go
-
 # Run tests
 test:
     go test ./... -v
@@ -236,9 +368,6 @@ test:
 test-integration:
     go test ./... -tags=integration -v
 
-# Generate OpenAPI documentation
-gen-docs:
-    swag init -g cmd/main.go
 ```
 
 ## Testing
@@ -263,6 +392,7 @@ The API is documented using OpenAPI. Access the documentation at:
 ## Monitoring and Logging
 
 - Each service uses structured logging with Zap
+- Sentry
 
 ## Contributing
 

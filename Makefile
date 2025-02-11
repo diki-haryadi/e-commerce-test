@@ -17,18 +17,10 @@ SERVICES=auth-service product-service order-service shop-service warehouse-servi
 BUILD_DIR=build
 MIGRATIONS_DIR=migrations
 
-.PHONY: all build test clean run deps docker-build docker-push migrate-up migrate-down \
+.PHONY: all test clean run deps docker-build docker-push migrate-up migrate-down \
         seed test-integration proto swagger lint help $(SERVICES)
 
-all: clean deps build
-
-# Build all services
-build:
-	@for service in $(SERVICES); do \
-		echo "Building $$service..." ; \
-		cd ./$$service && $(GOBUILD) -o ../$(BUILD_DIR)/$$service ./cmd/main.go ; \
-		cd .. ; \
-	done
+all: clean deps
 
 # Run tests for all services
 test:
