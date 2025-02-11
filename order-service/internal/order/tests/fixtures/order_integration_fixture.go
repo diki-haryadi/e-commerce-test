@@ -2,41 +2,34 @@ package articleFixture
 
 import (
 	"context"
+	"github.com/diki-haryadi/go-micro-template/app"
 	"math"
-	"net"
 	"time"
 
-	articleV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/test/bufconn"
-
 	sampleExtServiceUseCase "github.com/diki-haryadi/go-micro-template/external/sample_ext_service/usecase"
-	articleGrpc "github.com/diki-haryadi/go-micro-template/internal/order/delivery/grpc"
-	articleHttp "github.com/diki-haryadi/go-micro-template/internal/order/delivery/http"
-	articleKafkaProducer "github.com/diki-haryadi/go-micro-template/internal/order/delivery/kafka/producer"
-	articleRepo "github.com/diki-haryadi/go-micro-template/internal/order/repository"
-	articleUseCase "github.com/diki-haryadi/go-micro-template/internal/order/usecase"
+	orderHttp "github.com/diki-haryadi/go-micro-template/internal/order/delivery/http"
+	orderKafkaProducer "github.com/diki-haryadi/go-micro-template/internal/order/delivery/kafka/producer"
+	orderRepo "github.com/diki-haryadi/go-micro-template/internal/order/repository"
+	orderUseCase "github.com/diki-haryadi/go-micro-template/internal/order/usecase"
 	externalBridge "github.com/diki-haryadi/ztools/external_bridge"
 	iContainer "github.com/diki-haryadi/ztools/infra_container"
-	"github.com/diki-haryadi/ztools/logger"
 )
 
-const BUFSIZE = 1024 * 1024
-
 type IntegrationTestFixture struct {
-	TearDown          func()
-	Ctx               context.Context
-	Cancel            context.CancelFunc
-	InfraContainer    *iContainer.IContainer
-	ArticleGrpcClient articleV1.ArticleServiceClient
+	TearDown       func()
+	Ctx            context.Context
+	Cancel         context.CancelFunc
+	InfraContainer *iContainer.IContainer
 }
 
 func NewIntegrationTestFixture() (*IntegrationTestFixture, error) {
+	_ = app.New().Init()
 	deadline := time.Now().Add(time.Duration(math.MaxInt64))
 	ctx, cancel := context.WithDeadline(context.Background(), deadline)
 
-	ic, infraDown, err := iContainer.NewIC(ctx)
+	container := iContainer.IContainer{}
+	ic, infraDown, err := container.IContext(ctx).
+		ICDown().ICPostgres().ICEcho().NewIC()
 	if err != nil {
 		cancel()
 		return nil, err
@@ -49,52 +42,24 @@ func NewIntegrationTestFixture() (*IntegrationTestFixture, error) {
 	}
 
 	seServiceUseCase := sampleExtServiceUseCase.NewSampleExtServiceUseCase(extBridge.SampleExtGrpcService)
-	kafkaProducer := articleKafkaProducer.NewProducer(ic.KafkaWriter)
-	repository := articleRepo.NewRepository(ic.Postgres)
-	useCase := articleUseCase.NewUseCase(repository, seServiceUseCase, kafkaProducer)
+	kafkaProducer := orderKafkaProducer.NewProducer(ic.KafkaWriter)
+	repository := orderRepo.NewRepository(ic.Postgres)
+	useCase := orderUseCase.NewUseCase(repository, seServiceUseCase, kafkaProducer)
 
 	// http
 	ic.EchoHttpServer.SetupDefaultMiddlewares()
 	httpRouterGp := ic.EchoHttpServer.GetEchoInstance().Group(ic.EchoHttpServer.GetBasePath())
-	httpController := articleHttp.NewController(useCase)
-	articleHttp.NewRouter(httpController).Register(httpRouterGp)
-
-	// grpc
-	grpcController := articleGrpc.NewController(useCase)
-	articleV1.RegisterArticleServiceServer(ic.GrpcServer.GetCurrentGrpcServer(), grpcController)
-
-	lis := bufconn.Listen(BUFSIZE)
-	go func() {
-		if err := ic.GrpcServer.GetCurrentGrpcServer().Serve(lis); err != nil {
-			logger.Zap.Sugar().Fatalf("Server exited with error: %v", err)
-		}
-	}()
-
-	grpcClientConn, err := grpc.DialContext(
-		ctx,
-		"bufnet",
-		grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
-			return lis.Dial()
-		}),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
-	if err != nil {
-		cancel()
-		return nil, err
-	}
-
-	articleGrpcClient := articleV1.NewArticleServiceClient(grpcClientConn)
+	httpController := orderHttp.NewController(useCase)
+	orderHttp.NewRouter(httpController).Register(httpRouterGp)
 
 	return &IntegrationTestFixture{
 		TearDown: func() {
 			cancel()
 			infraDown()
-			_ = grpcClientConn.Close()
 			extBridgeDown()
 		},
-		InfraContainer:    ic,
-		Ctx:               ctx,
-		Cancel:            cancel,
-		ArticleGrpcClient: articleGrpcClient,
+		InfraContainer: ic,
+		Ctx:            ctx,
+		Cancel:         cancel,
 	}, nil
 }

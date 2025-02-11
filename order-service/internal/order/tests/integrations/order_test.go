@@ -1,33 +1,29 @@
 package artcileIntegrationTest
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	articleV1 "github.com/diki-haryadi/protobuf-template/go-micro-template/article/v1"
 	"github.com/labstack/echo/v4"
 
-	articleDto "github.com/diki-haryadi/go-micro-template/internal/order/dto"
-	articleFixture "github.com/diki-haryadi/go-micro-template/internal/order/tests/fixtures"
-	grpcError "github.com/diki-haryadi/ztools/error/grpc"
+	orderDto "github.com/diki-haryadi/go-micro-template/internal/order/dto"
+	orderFixture "github.com/diki-haryadi/go-micro-template/internal/order/tests/fixtures"
 	httpError "github.com/diki-haryadi/ztools/error/http"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"google.golang.org/grpc/codes"
 )
 
 type testSuite struct {
 	suite.Suite
-	fixture *articleFixture.IntegrationTestFixture
+	fixture *orderFixture.IntegrationTestFixture
 }
 
 func (suite *testSuite) SetupSuite() {
-	fixture, err := articleFixture.NewIntegrationTestFixture()
+	fixture, err := orderFixture.NewIntegrationTestFixture()
 	if err != nil {
 		assert.Error(suite.T(), err)
 	}
@@ -39,62 +35,14 @@ func (suite *testSuite) TearDownSuite() {
 	suite.fixture.TearDown()
 }
 
-func (suite *testSuite) TestSuccessfulCreateGrpcArticle() {
-	ctx := context.Background()
+func (suite *testSuite) TestSuccessHttpCheckoutOrder() {
+	orderJSON := `{"user_id":"550e8400-e29b-41d4-a716-44665544000a","items":{
+	"product_id":"550e8400-e29b-41d4-a716-446655440000",
+	"warehouse_id":"550e8400-e29b-41d4-a716-446655440200",
+	"quantity":2,
+	}}`
 
-	createArticleRequest := &articleV1.CreateArticleRequest{
-		Name: "John",
-		Desc: "Pro Developer",
-	}
-
-	response, err := suite.fixture.ArticleGrpcClient.CreateArticle(ctx, createArticleRequest)
-	if err != nil {
-		assert.Error(suite.T(), err)
-	}
-
-	assert.NotNil(suite.T(), response.Id)
-	assert.Equal(suite.T(), "John", response.Name)
-	assert.Equal(suite.T(), "Pro Developer", response.Desc)
-}
-
-func (suite *testSuite) TestNameValidationErrCreateGrpcArticle() {
-	ctx := context.Background()
-
-	createArticleRequest := &articleV1.CreateArticleRequest{
-		Name: "Jo",
-		Desc: "Pro Developer",
-	}
-	_, err := suite.fixture.ArticleGrpcClient.CreateArticle(ctx, createArticleRequest)
-
-	assert.NotNil(suite.T(), err)
-
-	grpcErr := grpcError.ParseExternalGrpcErr(err)
-	assert.NotNil(suite.T(), grpcErr)
-	assert.Equal(suite.T(), codes.InvalidArgument, grpcErr.GetStatus())
-	assert.Contains(suite.T(), grpcErr.GetDetails(), "name")
-}
-
-func (suite *testSuite) TestDescValidationErrCreateGrpcArticle() {
-	ctx := context.Background()
-
-	createArticleRequest := &articleV1.CreateArticleRequest{
-		Name: "John",
-		Desc: "Pro",
-	}
-	_, err := suite.fixture.ArticleGrpcClient.CreateArticle(ctx, createArticleRequest)
-
-	assert.NotNil(suite.T(), err)
-
-	grpcErr := grpcError.ParseExternalGrpcErr(err)
-	assert.NotNil(suite.T(), grpcErr)
-	assert.Equal(suite.T(), codes.InvalidArgument, grpcErr.GetStatus())
-	assert.Contains(suite.T(), grpcErr.GetDetails(), "desc")
-}
-
-func (suite *testSuite) TestSuccessCreateHttpArticle() {
-	articleJSON := `{"name":"John Snow","desc":"King of the north"}`
-
-	request := httptest.NewRequest(http.MethodPost, "/api/v1/order", strings.NewReader(articleJSON))
+	request := httptest.NewRequest(http.MethodPost, "/api/v1/orders/checkout", strings.NewReader(orderJSON))
 	request.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 	response := httptest.NewRecorder()
@@ -102,18 +50,20 @@ func (suite *testSuite) TestSuccessCreateHttpArticle() {
 
 	assert.Equal(suite.T(), http.StatusOK, response.Code)
 
-	caDto := new(articleDto.CreateArticleRequestDto)
+	caDto := new(orderDto.CheckoutRequestDto)
 	if assert.NoError(suite.T(), json.Unmarshal(response.Body.Bytes(), caDto)) {
-		assert.Equal(suite.T(), "John Snow", caDto.Name)
-		assert.Equal(suite.T(), "King of the north", caDto.Description)
+		assert.Contains(suite.T(), "-", caDto.UserID)
 	}
 
 }
 
-func (suite *testSuite) TestNameValidationErrCreateHttpArticle() {
-	articleJSON := `{"name":"Jo","desc":"King of the north"}`
-
-	request := httptest.NewRequest(http.MethodPost, "/api/v1/order", strings.NewReader(articleJSON))
+func (suite *testSuite) TestUserIDValidationErrHttpCheckoutOrder() {
+	orderJSON := `{"user_id":"","items":{
+	"product_id":"550e8400-e29b-41d4-a716-446655440000",
+	"warehouse_id":"550e8400-e29b-41d4-a716-446655440200",
+	"quantity":2,
+	}}`
+	request := httptest.NewRequest(http.MethodPost, "/api/v1/orders/checkout", strings.NewReader(orderJSON))
 	request.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 	response := httptest.NewRecorder()
@@ -125,29 +75,9 @@ func (suite *testSuite) TestNameValidationErrCreateHttpArticle() {
 	httpErr := httpError.ParseExternalHttpErr(response.Result().Body)
 	if assert.NotNil(suite.T(), httpErr) {
 		assert.Equal(suite.T(), http.StatusBadRequest, httpErr.GetStatus())
-		assert.Contains(suite.T(), httpErr.GetDetails(), "name")
+		assert.Contains(suite.T(), httpErr.GetDetails(), "user_id")
 	}
 
-}
-
-func (suite *testSuite) TestDescValidationErrCreateHttpArticle() {
-	articleJSON := `{"name":"John Snow","desc":"King"}`
-
-	request := httptest.NewRequest(http.MethodPost, "/api/v1/order", strings.NewReader(articleJSON))
-	request.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-
-	response := httptest.NewRecorder()
-
-	suite.fixture.InfraContainer.EchoHttpServer.SetupDefaultMiddlewares()
-	suite.fixture.InfraContainer.EchoHttpServer.GetEchoInstance().ServeHTTP(response, request)
-
-	assert.Equal(suite.T(), http.StatusBadRequest, response.Code)
-
-	httpErr := httpError.ParseExternalHttpErr(response.Result().Body)
-	if assert.NotNil(suite.T(), httpErr) {
-		assert.Equal(suite.T(), http.StatusBadRequest, httpErr.GetStatus())
-		assert.Contains(suite.T(), httpErr.GetDetails(), "desc")
-	}
 }
 
 func TestRunSuite(t *testing.T) {
